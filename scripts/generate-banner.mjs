@@ -68,14 +68,14 @@ function svg(width, height, opts = {}) {
 
   <!-- magazine header bar -->
   <rect x="6" y="6" width="${width - 12}" height="${headerH}" fill="${INK}"/>
-  <text x="${padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700">CHUDS.DEV MAG · VOL. 2026 · ISSUE 01</text>
+  <text x="${padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700">8TP.DEV MAG · VOL. 2026 · ISSUE 01</text>
   <text x="${width - padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700" text-anchor="end">${escape("PREMIUM SOFTWARE / BASEMENT EDITION")}</text>
 
   <!-- handle label -->
   <text x="${padX}" y="${labelY + headerH}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize * 1.05}" fill="${INK}" font-weight="700">// 8tp / home</text>
 
   <!-- big title -->
-  <text x="${padX}" y="${titleY}" font-family="Space Grotesk, Arial Black, sans-serif" font-size="${titleSize}" fill="${INK}" font-weight="900" letter-spacing="-2">chuds.dev</text>
+  <text x="${padX}" y="${titleY}" font-family="Space Grotesk, Arial Black, sans-serif" font-size="${titleSize}" fill="${INK}" font-weight="900" letter-spacing="-2">8tp.dev</text>
 
   <!-- tagline -->
   <text x="${padX}" y="${taglineY}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${taglineSize}" fill="${INK}" font-weight="500">premium software, engineered from the basement</text>

@@ -4,7 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://chuds.dev",
+  site: "https://8tp.dev",
   integrations: [svelte(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
