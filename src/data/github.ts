@@ -1,17 +1,17 @@
 export const github = {
-  "generatedAt": "2026-06-09T20:47:47.061Z",
+  "generatedAt": "2026-07-12T19:28:20.892Z",
   "profile": {
-    "publicRepos": 35,
-    "followers": 5,
-    "following": 6,
-    "yearlyContributions": 1651,
-    "contributedToRepos": 6,
-    "totalStars": 12,
-    "totalForks": 3
+    "publicRepos": 39,
+    "followers": 8,
+    "following": 8,
+    "yearlyContributions": 2170,
+    "contributedToRepos": 7,
+    "totalStars": 14,
+    "totalForks": 4
   },
   "contributions": {
-    "start": "2025-06-08",
-    "end": "2026-06-09",
+    "start": "2025-07-13",
+    "end": "2026-07-12",
     "nonzero": [
       [
         "2025-09-15",
@@ -319,28 +319,166 @@ export const github = {
       ],
       [
         "2026-06-09",
-        7
+        62
+      ],
+      [
+        "2026-06-10",
+        94
+      ],
+      [
+        "2026-06-11",
+        83
+      ],
+      [
+        "2026-06-12",
+        8
+      ],
+      [
+        "2026-06-19",
+        10
+      ],
+      [
+        "2026-06-20",
+        8
+      ],
+      [
+        "2026-06-22",
+        25
+      ],
+      [
+        "2026-06-23",
+        14
+      ],
+      [
+        "2026-06-24",
+        22
+      ],
+      [
+        "2026-06-25",
+        48
+      ],
+      [
+        "2026-06-26",
+        33
+      ],
+      [
+        "2026-07-01",
+        1
+      ],
+      [
+        "2026-07-02",
+        1
+      ],
+      [
+        "2026-07-03",
+        3
+      ],
+      [
+        "2026-07-04",
+        78
+      ],
+      [
+        "2026-07-05",
+        10
+      ],
+      [
+        "2026-07-07",
+        2
+      ],
+      [
+        "2026-07-10",
+        9
+      ],
+      [
+        "2026-07-12",
+        15
       ]
     ]
   },
   "repoMetrics": {
-    "instagib-arena": {
+    "palhelm-bot": {
       "stars": 0,
       "forks": 0,
       "language": "TypeScript",
-      "updatedAt": "2026-06-09T20:24:47Z"
+      "updatedAt": "2026-07-12T18:58:13Z"
+    },
+    "palhelm": {
+      "stars": 0,
+      "forks": 0,
+      "language": "Go",
+      "updatedAt": "2026-07-12T18:58:09Z"
+    },
+    "8tp.dev": {
+      "stars": 1,
+      "forks": 0,
+      "language": "HTML",
+      "updatedAt": "2026-07-10T18:51:56Z"
+    },
+    "8tp": {
+      "stars": 0,
+      "forks": 0,
+      "language": null,
+      "updatedAt": "2026-07-10T17:55:18Z"
+    },
+    "typeduel": {
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "updatedAt": "2026-07-10T17:52:39Z"
+    },
+    "vitals-command-center": {
+      "stars": 1,
+      "forks": 0,
+      "language": "TypeScript",
+      "updatedAt": "2026-07-10T17:52:38Z"
+    },
+    "chudopoly": {
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "updatedAt": "2026-07-10T17:52:38Z"
+    },
+    "still-launcher": {
+      "stars": 1,
+      "forks": 0,
+      "language": "Kotlin",
+      "updatedAt": "2026-07-10T17:52:37Z"
+    },
+    "hudaim": {
+      "stars": 1,
+      "forks": 0,
+      "language": "JavaScript",
+      "updatedAt": "2026-07-10T17:52:37Z"
+    },
+    "antmaze": {
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "updatedAt": "2026-07-10T17:52:36Z"
+    },
+    "coup": {
+      "stars": 2,
+      "forks": 4,
+      "language": "TypeScript",
+      "updatedAt": "2026-07-10T17:52:36Z"
+    },
+    "wc26-bracket": {
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "updatedAt": "2026-07-06T04:28:56Z"
+    },
+    "instagib-arena": {
+      "stars": 1,
+      "forks": 0,
+      "language": "TypeScript",
+      "updatedAt": "2026-06-11T19:40:52Z"
     },
     "goose": {
       "stars": 0,
       "forks": 0,
       "language": "Rust",
       "updatedAt": "2026-06-04T14:39:41Z"
-    },
-    "typeduel": {
-      "stars": 0,
-      "forks": 0,
-      "language": "TypeScript",
-      "updatedAt": "2026-05-24T07:22:20Z"
     },
     "spotify-player": {
       "stars": 0,
@@ -353,12 +491,6 @@ export const github = {
       "forks": 0,
       "language": "Python",
       "updatedAt": "2026-05-17T05:37:32Z"
-    },
-    "still-launcher": {
-      "stars": 1,
-      "forks": 0,
-      "language": "Kotlin",
-      "updatedAt": "2026-05-12T01:39:40Z"
     },
     "still-voice": {
       "stars": 0,
@@ -408,35 +540,11 @@ export const github = {
       "language": "Go",
       "updatedAt": "2026-05-11T17:25:40Z"
     },
-    "hudaim": {
-      "stars": 1,
-      "forks": 0,
-      "language": "JavaScript",
-      "updatedAt": "2026-05-08T15:31:05Z"
-    },
     "chuds-arcade": {
       "stars": 1,
       "forks": 0,
       "language": "TypeScript",
       "updatedAt": "2026-05-08T15:30:49Z"
-    },
-    "chuds.dev": {
-      "stars": 1,
-      "forks": 0,
-      "language": "HTML",
-      "updatedAt": "2026-05-08T15:30:47Z"
-    },
-    "coup": {
-      "stars": 2,
-      "forks": 3,
-      "language": "TypeScript",
-      "updatedAt": "2026-05-04T06:24:51Z"
-    },
-    "8tp": {
-      "stars": 0,
-      "forks": 0,
-      "language": null,
-      "updatedAt": "2026-05-02T23:12:07Z"
     },
     "screencap": {
       "stars": 3,
@@ -467,12 +575,6 @@ export const github = {
       "forks": 0,
       "language": "Python",
       "updatedAt": "2026-03-22T01:18:20Z"
-    },
-    "antmaze": {
-      "stars": 0,
-      "forks": 0,
-      "language": "TypeScript",
-      "updatedAt": "2026-03-18T18:23:25Z"
     },
     "recopy": {
       "stars": 0,
@@ -510,12 +612,6 @@ export const github = {
       "language": "Rust",
       "updatedAt": "2026-03-02T22:08:11Z"
     },
-    "chudopoly": {
-      "stars": 0,
-      "forks": 0,
-      "language": "JavaScript",
-      "updatedAt": "2026-03-02T16:25:33Z"
-    },
     "dtak-ui-maps": {
       "stars": 0,
       "forks": 0,
@@ -537,104 +633,104 @@ export const github = {
   },
   "recentActivity": [
     {
-      "label": "pushed to instagib-arena",
-      "repo": "8tp/instagib-arena",
-      "at": "2026-06-09T20:24:01Z"
+      "label": "pushed to palhelm-bot",
+      "repo": "8tp/palhelm-bot",
+      "at": "2026-07-12T18:57:51Z"
     },
     {
-      "label": "merged PR in instagib-arena",
-      "repo": "8tp/instagib-arena",
-      "at": "2026-06-09T20:24:00Z"
-    },
-    {
-      "label": "created branch in instagib-arena",
-      "repo": "8tp/instagib-arena",
-      "at": "2026-06-09T20:07:29Z"
-    },
-    {
-      "label": "pushed to instagib-arena",
-      "repo": "8tp/instagib-arena",
-      "at": "2026-06-09T20:07:29Z"
-    },
-    {
-      "label": "created branch in instagib-arena",
-      "repo": "8tp/instagib-arena",
-      "at": "2026-06-09T20:07:28Z"
+      "label": "pushed to palhelm",
+      "repo": "8tp/palhelm",
+      "at": "2026-07-12T18:57:50Z"
     },
     {
       "label": "PublicEvent",
-      "repo": "8tp/instagib-arena",
-      "at": "2026-05-29T16:09:03Z"
-    },
-    {
-      "label": "ForkEvent",
-      "repo": "b-nnett/goose",
-      "at": "2026-06-04T14:39:40Z"
-    },
-    {
-      "label": "starred b-nnett/goose",
-      "repo": "b-nnett/goose",
-      "at": "2026-06-04T14:37:54Z"
-    },
-    {
-      "label": "starred firecrawl/firecrawl",
-      "repo": "firecrawl/firecrawl",
-      "at": "2026-05-18T00:12:45Z"
-    },
-    {
-      "label": "ForkEvent",
-      "repo": "aome510/spotify-player",
-      "at": "2026-05-17T13:17:08Z"
-    },
-    {
-      "label": "starred aome510/spotify-player",
-      "repo": "aome510/spotify-player",
-      "at": "2026-05-17T06:22:04Z"
+      "repo": "8tp/palhelm-bot",
+      "at": "2026-07-12T18:21:30Z"
     },
     {
       "label": "PublicEvent",
-      "repo": "8tp/circular-scroll",
-      "at": "2026-05-17T05:32:47Z"
+      "repo": "8tp/palhelm",
+      "at": "2026-07-12T18:21:05Z"
     },
     {
-      "label": "pushed to circular-scroll",
-      "repo": "8tp/circular-scroll",
-      "at": "2026-05-17T05:37:29Z"
+      "label": "pushed to 8tp.dev",
+      "repo": "8tp/8tp.dev",
+      "at": "2026-07-10T17:55:04Z"
     },
     {
-      "label": "starred FreeTubeApp/FreeTube",
-      "repo": "FreeTubeApp/FreeTube",
-      "at": "2026-05-16T20:45:57Z"
+      "label": "pushed to 8tp",
+      "repo": "8tp/8tp",
+      "at": "2026-07-10T17:54:40Z"
+    },
+    {
+      "label": "opened PR in chuds-arcade",
+      "repo": "8tp/chuds-arcade",
+      "at": "2026-07-10T17:51:05Z"
+    },
+    {
+      "label": "created branch in chuds-arcade",
+      "repo": "8tp/chuds-arcade",
+      "at": "2026-07-10T17:50:57Z"
+    },
+    {
+      "label": "pushed to Coup",
+      "repo": "8tp/Coup",
+      "at": "2026-07-10T17:50:46Z"
+    },
+    {
+      "label": "pushed to 8tp",
+      "repo": "8tp/8tp",
+      "at": "2026-07-10T17:50:37Z"
+    },
+    {
+      "label": "pushed to AntMaze",
+      "repo": "8tp/AntMaze",
+      "at": "2026-07-10T17:50:34Z"
+    },
+    {
+      "label": "pushed to Vitals-Command-Center",
+      "repo": "8tp/Vitals-Command-Center",
+      "at": "2026-07-10T17:50:32Z"
+    },
+    {
+      "label": "pushed to 8tp.dev",
+      "repo": "8tp/8tp.dev",
+      "at": "2026-07-10T17:50:26Z"
+    },
+    {
+      "label": "starred ogulcancelik/herdr",
+      "repo": "ogulcancelik/herdr",
+      "at": "2026-07-09T15:24:32Z"
+    },
+    {
+      "label": "created branch in wc26-bracket",
+      "repo": "8tp/wc26-bracket",
+      "at": "2026-07-06T04:28:52Z"
     },
     {
       "label": "DeleteEvent",
-      "repo": "8tp/still-launcher",
-      "at": "2026-05-12T01:39:36Z"
+      "repo": "8tp/Vitals-Command-Center",
+      "at": "2026-06-23T15:54:34Z"
     },
     {
-      "label": "pushed to still-launcher",
-      "repo": "8tp/still-launcher",
-      "at": "2026-05-12T01:39:35Z"
+      "label": "pushed to Vitals-Command-Center",
+      "repo": "8tp/Vitals-Command-Center",
+      "at": "2026-06-23T15:54:32Z"
     },
     {
-      "label": "created branch in still-launcher",
-      "repo": "8tp/still-launcher",
-      "at": "2026-05-12T01:24:47Z"
+      "label": "opened PR in Vitals-Command-Center",
+      "repo": "8tp/Vitals-Command-Center",
+      "at": "2026-06-23T15:53:22Z"
     },
     {
-      "label": "DeleteEvent",
-      "repo": "8tp/still-voice",
-      "at": "2026-05-11T23:16:42Z"
-    },
-    {
-      "label": "pushed to still-voice",
-      "repo": "8tp/still-voice",
-      "at": "2026-05-11T23:16:41Z"
+      "label": "created branch in Vitals-Command-Center",
+      "repo": "8tp/Vitals-Command-Center",
+      "at": "2026-06-23T15:53:21Z"
     },
     {
       "label": "DeleteEvent",
-      "repo": "8tp/still-sms",
-      "at": "2026-05-11T23:16:39Z"
+      "repo": "8tp/Vitals-Command-Center",
+      "at": "2026-06-23T15:33:59Z"
     }
   ]
 } as const;

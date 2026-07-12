@@ -2,18 +2,13 @@
 import Layout from "~/layouts/Layout.astro";
 import Sidebar from "~/components/Sidebar.astro";
 import Hero from "~/components/Hero.astro";
-import EditorLetter from "~/components/EditorLetter.astro";
+import NowPanel from "~/components/NowPanel.astro";
 import ContributionChart from "~/components/ContributionChart.astro";
 import AvatarCard from "~/components/AvatarCard.astro";
 import TechStack from "~/components/TechStack.astro";
 import About from "~/components/About.astro";
 import Projects from "~/components/Projects.astro";
-import { github } from "~/data/github";
-
-const issn = "1208-" + String(github.profile.publicRepos).padStart(2, "0") + "26";
-
-// Deterministic pseudo-random barcode bars so server + client match.
-const barcodeWidths = [3, 1, 2, 4, 1, 3, 2, 1, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 4, 1, 3, 2, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 4, 2];
+const year = new Date().getFullYear();
 ---
 
 <Layout>
@@ -23,31 +18,31 @@ const barcodeWidths = [3, 1, 2, 4, 1, 3, 2, 1, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 
     <div class="flex flex-col gap-3.5 sm:gap-6 min-w-0">
       <Hero />
 
-      {/* Mobile-only avatar + tech stack — Sidebar handles them on lg+ */}
+      {/* Mobile-only avatar and tech stack; Sidebar handles them on lg+ */}
       <div class="flex flex-col gap-3.5 lg:hidden">
         <AvatarCard />
         <TechStack />
       </div>
 
-      <EditorLetter />
+      <NowPanel />
       <ContributionChart />
       <About />
       <Projects />
 
       <footer class="mt-2 border border-border bg-panel">
         <div class="flex items-center justify-between border-b border-border bg-fg text-panel px-3 py-1 font-mono text-[10px] uppercase">
-          <span>// colophon</span>
-          <span>back cover</span>
+          <span>// footer</span>
+          <span>8tp.dev</span>
         </div>
 
         <div class="grid sm:grid-cols-[1fr_auto] gap-4 p-4">
           <div class="space-y-3 font-mono text-[11px]">
             <p>
               <span class="text-fg">$</span>
-              echo "© {new Date().getFullYear()} 8tp.dev · manga-ink edition"
+              echo "© {year} 8tp.dev"
             </p>
             <p class="text-fg-muted">
-              set in space grotesk + jetbrains mono. inked, screentoned, and stapled in the basement.
+              Set in Space Grotesk and JetBrains Mono. Built and deployed from source.
             </p>
             <a
               href="https://github.com/8tp/8tp.dev"
@@ -59,20 +54,14 @@ const barcodeWidths = [3, 1, 2, 4, 1, 3, 2, 1, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 
             </a>
           </div>
           <div class="flex sm:flex-col items-start sm:items-end gap-3 sm:gap-2">
-            <div
-              aria-hidden="true"
-              class="hidden sm:flex items-end gap-[2px] h-12 border border-border bg-panel px-2 py-1"
+            <a
+              href="https://github.com/8tp"
+              target="_blank"
+              rel="noopener"
+              class="font-mono text-[10px] uppercase tracking-normal text-fg-muted hover:text-fg transition-colors"
             >
-              {barcodeWidths.map((w) => (
-                <span
-                  class="block bg-fg h-full"
-                  style={`width: ${w}px;`}
-                />
-              ))}
-            </div>
-            <p class="font-mono text-[10px] uppercase tracking-normal text-fg-muted">
-              issn {issn} · vol. 2026
-            </p>
+              github.com/8tp
+            </a>
           </div>
         </div>
 
@@ -84,7 +73,7 @@ const barcodeWidths = [3, 1, 2, 4, 1, 3, 2, 1, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 
             class="group flex items-center justify-between gap-3 border-b sm:border-b-0 sm:border-r border-border px-4 py-3 hover:bg-fg hover:text-panel transition-colors"
           >
             <span class="flex flex-col">
-              <span class="text-[10px] uppercase text-fg-muted group-hover:text-panel">// pressed with</span>
+              <span class="text-[10px] uppercase text-fg-muted group-hover:text-panel">// built with</span>
               <span class="text-fg font-bold group-hover:text-panel">Astro 6</span>
             </span>
             <span class="text-fg-muted group-hover:text-panel">astro.build -&gt;</span>
@@ -96,7 +85,7 @@ const barcodeWidths = [3, 1, 2, 4, 1, 3, 2, 1, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 
             class="group flex items-center justify-between gap-3 border-b sm:border-b-0 sm:border-r border-border px-4 py-3 hover:bg-fg hover:text-panel transition-colors"
           >
             <span class="flex flex-col">
-              <span class="text-[10px] uppercase text-fg-muted group-hover:text-panel">// inked with</span>
+              <span class="text-[10px] uppercase text-fg-muted group-hover:text-panel">// components</span>
               <span class="text-fg font-bold group-hover:text-panel">Svelte 5</span>
             </span>
             <span class="text-fg-muted group-hover:text-panel">svelte.dev -&gt;</span>
@@ -108,7 +97,7 @@ const barcodeWidths = [3, 1, 2, 4, 1, 3, 2, 1, 5, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 
             class="group flex items-center justify-between gap-3 px-4 py-3 hover:bg-fg hover:text-panel transition-colors"
           >
             <span class="flex flex-col">
-              <span class="text-[10px] uppercase text-fg-muted group-hover:text-panel">// styled with</span>
+              <span class="text-[10px] uppercase text-fg-muted group-hover:text-panel">// styling</span>
               <span class="text-fg font-bold group-hover:text-panel">Tailwind 4</span>
             </span>
             <span class="text-fg-muted group-hover:text-panel">tailwindcss.com -&gt;</span>

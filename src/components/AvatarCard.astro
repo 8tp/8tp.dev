@@ -5,8 +5,8 @@ import { formatCompact, github } from "~/data/github";
 
 <section class="win">
   <div class="flex items-center justify-between border-b border-border bg-fg text-panel px-3 py-1 font-mono text-[10px] uppercase">
-    <span>// cover star</span>
-    <span class="text-gutter">no. {String(github.profile.publicRepos).padStart(2, "0")}</span>
+    <span>// profile</span>
+    <span class="text-gutter">@{site.author.handle}</span>
   </div>
   <div class="relative aspect-square overflow-hidden border-b border-border screentone">
     <img
@@ -27,8 +27,8 @@ import { formatCompact, github } from "~/data/github";
     <p class="font-mono text-[11px] mt-0.5 sm:mt-1 text-gutter">{site.author.pronouns} · {site.author.location}</p>
   </div>
   <div class="px-3 sm:px-4 py-2.5 sm:py-3 space-y-2.5 sm:space-y-3 text-sm leading-relaxed">
-    <p class="font-mono text-[12px] hidden sm:block">
-      premium software,<br />engineered from the basement
+    <p class="font-mono text-[12px] hidden sm:block text-fg-dim">
+      games, self-hosted tools,<br />and native apps
     </p>
     <div class="grid grid-cols-4 sm:grid-cols-2 gap-y-1 sm:gap-y-1.5 gap-x-2 sm:border-t sm:border-border sm:pt-3 font-mono text-[10px] sm:text-[11px]">
       <span><strong class="text-fg">{github.profile.publicRepos}</strong> repos</span>

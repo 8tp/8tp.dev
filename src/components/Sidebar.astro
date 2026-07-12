@@ -21,14 +21,14 @@ const sections = [
         // {site.author.handle}
       </span>
       <span class="absolute top-3 right-3 font-mono text-[10px] uppercase tracking-normal text-fg-muted">
-        spine
+        portfolio
       </span>
       <span class="absolute bottom-3 left-3 flex flex-col gap-0.5 font-mono text-[10px] uppercase tracking-normal text-fg-muted leading-tight">
-        <span class="text-fg font-bold">vol. 2026</span>
-        <span>issue 01</span>
+        <span class="text-fg font-bold">2026</span>
+        <span>{site.author.location}</span>
       </span>
       <span class="absolute bottom-3 right-3 font-mono text-[10px] uppercase tracking-normal text-fg-muted [writing-mode:vertical-rl]">
-        manga edition
+        github.com/8tp
       </span>
       <span class="font-display text-[5.75rem] font-black leading-none tracking-normal [writing-mode:vertical-rl] rotate-180 group-hover:translate-x-[-2px] transition-transform">
         {site.title}
@@ -40,8 +40,8 @@ const sections = [
 
   <nav class="border border-border bg-panel" aria-label="Sections">
     <div class="flex items-center justify-between border-b border-border bg-fg text-panel px-3 py-1 font-mono text-[10px] uppercase">
-      <span>// table of contents</span>
-      <span>toc</span>
+      <span>// contents</span>
+      <span>nav</span>
     </div>
     <div class="flex flex-col font-mono text-xs">
       {sections.map((item, index) => (
@@ -51,7 +51,7 @@ const sections = [
         >
           <span>// {String(index + 1).padStart(2, "0")}</span>
           <span>/{item.label}</span>
-          <span class="text-fg-muted text-[10px]">p. {String(index + 1).padStart(2, "0")}</span>
+          <span class="text-fg-muted text-[10px]">-&gt;</span>
         </a>
       ))}
     </div>
@@ -61,13 +61,13 @@ const sections = [
 
   <div class="aspect-[4/3] border border-border bg-panel">
     <div class="flex items-center justify-between border-b border-border bg-fg text-panel px-3 py-1 font-mono text-[10px] uppercase">
-      <span>// scene 01</span>
-      <span>workspace</span>
+      <span>// workspace</span>
+      <span>desk</span>
     </div>
     <div class="relative h-[calc(100%-1.6rem)] overflow-hidden bg-bg-dark">
       <img
         src="/manga-workspace.png"
-        alt="Black-and-white manga illustration of a developer workspace"
+        alt="Ink-style illustration of a developer workspace at a desk"
         width="1000"
         height="750"
         class="size-full object-cover grayscale contrast-125 mix-blend-multiply"
@@ -75,7 +75,7 @@ const sections = [
         decoding="async"
       />
       <p class="absolute bottom-1 left-1 bg-fg text-panel px-1.5 py-0.5 font-mono text-[9px] uppercase">
-        basement HQ
+        desk
       </p>
     </div>
   </div>

@@ -3,7 +3,7 @@
 /* Tell Tailwind v4 where to scan for classnames - Svelte + Astro both. */
 @source "../**/*.{astro,svelte,ts,tsx,html}";
 
-/* Manga editorial palette: paper, ink, graphite, and screentone. */
+/* Ink-on-paper palette: paper, ink, graphite, and screentone. */
 @theme {
   --color-bg: #f3f0e8;
   --color-bg-dark: #ebe6db;
@@ -68,7 +68,7 @@ body {
   color: var(--color-panel);
 }
 
-/* Manga panels: hard ink borders, no glow, dense editorial rhythm. */
+/* Panels: hard ink borders, no glow, dense grid rhythm. */
 .win {
   position: relative;
   background-color: var(--color-panel);

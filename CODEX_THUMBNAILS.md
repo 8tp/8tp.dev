@@ -14,7 +14,7 @@ access). The agent will call OpenAI's image API to generate **one banner** plus
 Generate cohesive Tokyo-Night-themed artwork for chuds.dev:
 
 1. **`public/banner.webp`** — a 1280×320 hero banner that reads "chuds.dev" with
-   the tagline "premium software, engineered from the basement". Used at the
+   the tagline "games, self-hosted tools, and native apps". Used at the
    very top of the page in `src/components/Banner.astro`.
 2. **`public/projects/<slug>.webp`** — one 512×320 thumbnail per project,
    keyed by the slug in `src/data/projects.ts`. Used by the Svelte
@@ -95,7 +95,7 @@ is in #c0caf5 off-white; ".dev" is in magenta #bb9af7. Optional: a thin
 1px magenta cursor block blinking after ".dev".
 
 Below the wordmark, a smaller monospace tagline in #a9b1d6:
-    "$ premium software · engineered from the basement"
+    "$ games, self-hosted tools, and native apps"
 The "$" prompt symbol is in green #9ece6a.
 
 In the very bottom-left corner, three traffic-light dots (red #f7768e,

@@ -4,12 +4,11 @@
 
   interface Props {
     project: Project;
-    /** Compact tile (utilities & apps grid). */
+    /** Compact tile for the smaller grid. */
     compact?: boolean;
-    /** Single-row featured spread (default for chapter 02). */
-    /** Full-width hero panel reserved for the spotlight pick. */
+    /** Full-width hero panel for a spotlight project. */
     spotlight?: boolean;
-    /** 1-based card index used for the case-file stamp. */
+    /** 1-based card index used for the corner stamp. */
     index?: number;
   }
 
@@ -17,7 +16,8 @@
   const thumbSrc = $derived(project.thumbnail ?? `/projects/${project.slug}.webp`);
   const metric = $derived(getRepoMetric(project.slug, project.name));
   const stack = $derived(project.stack.filter((tech) => tech.toLowerCase() !== metric?.language?.toLowerCase()));
-  const stamp = $derived(`ep. ${String(index).padStart(2, "0")}`);
+  const stamp = $derived(String(index).padStart(2, "0"));
+  const primaryCta = $derived(project.cta ?? (project.live ? "play" : "open"));
   const projectHref = $derived(project.website ?? project.source);
 </script>
 
@@ -36,12 +36,12 @@
         class="size-full object-cover grayscale contrast-110"
       />
       <span class="absolute top-2 right-2 bg-fg text-panel px-2 py-1 font-mono text-[10px] uppercase">
-        {project.live ? "live · play" : project.year}
+        {project.live ? "live" : project.year}
       </span>
     </div>
     <div class="flex flex-col gap-2.5 sm:gap-3 p-3.5 sm:p-5">
       <div>
-        <p class="font-mono text-[11px] text-fg-muted uppercase">// hero / chapter 02</p>
+        <p class="font-mono text-[11px] text-fg-muted uppercase">// spotlight</p>
         <h3 class="font-display text-2xl sm:text-4xl font-black leading-none mt-1">{project.name}</h3>
       </div>
       <p class="text-[13px] sm:text-sm leading-snug sm:leading-relaxed text-fg-dim">{project.description}</p>
@@ -82,7 +82,7 @@
             rel="noopener noreferrer"
             class="flex-1 text-center border border-border bg-fg text-panel px-3 py-2 hover:bg-panel hover:text-fg transition-colors"
           >
-            play -&gt;
+            {primaryCta} -&gt;
           </a>
         {/if}
         {#if project.source}
@@ -188,7 +188,7 @@
           rel="noopener noreferrer"
           class="border border-border px-3 py-1 sm:py-1.5 hover:bg-fg hover:text-panel transition-colors"
         >
-          open -&gt;
+          {primaryCta} -&gt;
         </a>
       {/if}
     </div>

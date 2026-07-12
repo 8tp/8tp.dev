@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Generate the manga-magazine banner used as the OG image and the
- * orphaned /banner.webp public asset.  All ink, paper, and screentone:
- * no neon, no gradients.  Output:
+ * Generate the ink-on-paper banner used as the OG image and the
+ * /banner.webp public asset. All ink, paper, and screentone: no neon,
+ * no gradients. Output:
  *   public/og.png      (1200x630, social cards)
  *   public/banner.webp (1280x320, raw banner asset)
  */
@@ -26,7 +26,7 @@ function svg(width, height, opts = {}) {
   const speedStep = 14;
   const speedLen = Math.hypot(width, height) * 1.1;
 
-  // Halftone dot grid for the right "manifesto" panel.
+  // Halftone dot grid for the right callout panel.
   const dotsW = Math.round(width * 0.28);
   const dotsX = width - dotsW - Math.round(width * 0.05);
   const dotsY = Math.round(height * 0.30);
@@ -66,10 +66,10 @@ function svg(width, height, opts = {}) {
   <!-- outer ink frame -->
   <rect x="6" y="6" width="${width - 12}" height="${height - 12}" fill="none" stroke="${INK}" stroke-width="3"/>
 
-  <!-- magazine header bar -->
+  <!-- header bar -->
   <rect x="6" y="6" width="${width - 12}" height="${headerH}" fill="${INK}"/>
-  <text x="${padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700">8TP.DEV MAG · VOL. 2026 · ISSUE 01</text>
-  <text x="${width - padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700" text-anchor="end">${escape("PREMIUM SOFTWARE / BASEMENT EDITION")}</text>
+  <text x="${padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700">GAMES · SELF-HOSTED TOOLS · NATIVE APPS</text>
+  <text x="${width - padX}" y="${headerH * 0.7}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize}" fill="${PAPER}" font-weight="700" text-anchor="end">${escape("GITHUB.COM/8TP")}</text>
 
   <!-- handle label -->
   <text x="${padX}" y="${labelY + headerH}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${labelSize * 1.05}" fill="${INK}" font-weight="700">// 8tp / home</text>
@@ -78,11 +78,11 @@ function svg(width, height, opts = {}) {
   <text x="${padX}" y="${titleY}" font-family="Space Grotesk, Arial Black, sans-serif" font-size="${titleSize}" fill="${INK}" font-weight="900" letter-spacing="-2">8tp.dev</text>
 
   <!-- tagline -->
-  <text x="${padX}" y="${taglineY}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${taglineSize}" fill="${INK}" font-weight="500">premium software, engineered from the basement</text>
+  <text x="${padX}" y="${taglineY}" font-family="JetBrains Mono, ui-monospace, monospace" font-size="${taglineSize}" fill="${INK}" font-weight="500">games, self-hosted tools, and native apps</text>
 
   ${showFootnote ? `
   <!-- ascii rule -->
-  <text x="${padX}" y="${height - padX * 0.9}" font-family="JetBrains Mono, monospace" font-size="${labelSize * 0.95}" fill="${INK}" fill-opacity="0.55">--------------------------------- p. 001 / cover</text>
+  <text x="${padX}" y="${height - padX * 0.9}" font-family="JetBrains Mono, monospace" font-size="${labelSize * 0.95}" fill="${INK}" fill-opacity="0.55">--------------------------------- github.com/8tp</text>
   ` : ""}
 
   ${showStats ? `
@@ -90,9 +90,9 @@ function svg(width, height, opts = {}) {
   <rect x="${dotsX}" y="${dotsY}" width="${dotsW}" height="${dotsH}" fill="${PAPER}" stroke="${INK}" stroke-width="3"/>
   <rect x="${dotsX + 8}" y="${dotsY + 8}" width="${dotsW - 16}" height="${dotsH - 16}" fill="url(#halftone)"/>
   <rect x="${dotsX + 14}" y="${dotsY + 14}" width="${dotsW - 28}" height="${dotsH - 28}" fill="${INK}"/>
-  <text x="${dotsX + dotsW / 2}" y="${dotsY + dotsH / 2 - issueSize * 1.1}" font-family="JetBrains Mono, monospace" font-size="${issueSize}" fill="${PAPER}" text-anchor="middle" font-weight="700">code the tool.</text>
-  <text x="${dotsX + dotsW / 2}" y="${dotsY + dotsH / 2}" font-family="JetBrains Mono, monospace" font-size="${issueSize}" fill="${PAPER}" text-anchor="middle" font-weight="700">ship the game.</text>
-  <text x="${dotsX + dotsW / 2}" y="${dotsY + dotsH / 2 + issueSize * 1.1}" font-family="JetBrains Mono, monospace" font-size="${issueSize}" fill="${PAPER}" text-anchor="middle" font-weight="700">keep it sharp.</text>
+  <text x="${dotsX + dotsW / 2}" y="${dotsY + dotsH / 2 - issueSize * 1.1}" font-family="JetBrains Mono, monospace" font-size="${issueSize}" fill="${PAPER}" text-anchor="middle" font-weight="700">games.</text>
+  <text x="${dotsX + dotsW / 2}" y="${dotsY + dotsH / 2}" font-family="JetBrains Mono, monospace" font-size="${issueSize}" fill="${PAPER}" text-anchor="middle" font-weight="700">tools.</text>
+  <text x="${dotsX + dotsW / 2}" y="${dotsY + dotsH / 2 + issueSize * 1.1}" font-family="JetBrains Mono, monospace" font-size="${issueSize}" fill="${PAPER}" text-anchor="middle" font-weight="700">native apps.</text>
   ` : ""}
 </svg>`;
 }

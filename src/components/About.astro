@@ -4,32 +4,34 @@ import { formatShortDate, github } from "~/data/github";
 ---
 
 <section class="reveal" id="about">
-  <SectionLabel index="01" label="about" cmd="cat README.md" glyph="人" />
+  <SectionLabel index="01" label="about" cmd="cat README.md" />
   <div class="grid md:grid-cols-[1.15fr_0.85fr] gap-4">
     <article class="win">
       <div class="flex items-center justify-between border-b border-border bg-fg text-panel px-3 py-1 font-mono text-[10px] uppercase">
-        <span>// chapter 01 / opening monologue</span>
+        <span>// about</span>
         <span>est. 2024</span>
       </div>
       <div class="win-body text-[13px] sm:text-[0.95rem] leading-snug sm:leading-relaxed text-fg-dim space-y-2.5 sm:space-y-3.5">
         <p>
           Hey, I'm <span class="font-bold text-fg">Hunter</span>. I build small,
-          fast software solo: browser games, real-time multiplayer, Rust TUIs,
-          and native macOS utilities.
+          fast software solo: browser games, self-hosted server tools, Rust
+          TUIs, and native macOS utilities.
         </p>
         <p>
-          Most of what's on this page started as a tool I wished existed — a
-          tighter aim trainer, a 10&nbsp;KB game I could play on a phone, a
-          contribution heatmap that lives in the terminal. Weekend prototype,
-          a week of daily-driving, a tighter rewrite if it earns its slot.
+          Most of what's here started as something I wanted to exist. A tighter
+          aim trainer, a 10&nbsp;KB game I could play on a phone, a contribution
+          heatmap that lives in the terminal, an admin panel for the game server
+          I run. Weekend prototype, a week of daily driving, then a tighter
+          rewrite if it earns a slot.
         </p>
         <p>
-          The browser games run on plain canvas + websockets. The TUIs are
-          Rust + Ratatui. The macOS utilities are SwiftUI/AppKit, no Electron.
+          The browser games run on plain canvas and websockets. Palhelm is one
+          Docker image and one process, no external database. The TUIs are Rust
+          and Ratatui. The macOS apps are SwiftUI and AppKit, no Electron.
           Everything ships, then keeps getting smaller.
         </p>
         <p class="font-mono text-xs text-fg pt-1 border-t border-border">
-          <span>$</span> currently shipping: <a href="https://instagib.win" target="_blank" rel="noopener" class="ink-link">instagib</a>, <a href="https://coup.8tp.dev" target="_blank" rel="noopener" class="ink-link">coup</a>, <a href="https://aim.8tp.dev" target="_blank" rel="noopener" class="ink-link">hudaim</a>, <a href="https://ant.8tp.dev" target="_blank" rel="noopener" class="ink-link">antmaze</a>
+          <span>$</span> currently shipping: <a href="https://instagib.win" target="_blank" rel="noopener" class="ink-link">instagib</a>, <a href="https://palhelm.com" target="_blank" rel="noopener" class="ink-link">palhelm</a>, <a href="https://coup.8tp.dev" target="_blank" rel="noopener" class="ink-link">coup</a>, <a href="https://aim.8tp.dev" target="_blank" rel="noopener" class="ink-link">hudaim</a>
         </p>
       </div>
     </article>

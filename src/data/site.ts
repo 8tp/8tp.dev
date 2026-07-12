@@ -1,9 +1,9 @@
 export const site = {
   url: "https://8tp.dev",
   title: "8tp.dev",
-  tagline: "premium software, engineered from the basement",
+  tagline: "games, self-hosted tools, and native apps",
   description:
-    "Indie developer portfolio by Hunter (8tp). Browser games, web apps, terminal tools, and macOS utilities.",
+    "Portfolio of Hunter (8tp): real-time multiplayer browser games, self-hosted server tools, terminal apps, and native macOS utilities.",
   author: {
     name: "Hunter M.",
     handle: "8tp",
@@ -14,9 +14,7 @@ export const site = {
     { label: "GitHub", url: "https://github.com/8tp", id: "github" },
   ],
   /**
-   * Tech stack — mirrors the legacy "Tools of the trade" grid.
-   * Grouped the trafficlunar way (editors / languages / frameworks / infra)
-   * but the *content* is whatever Hunter actually ships with.
+   * Tech stack, grouped by kind. Kept short so the sidebar list stays readable.
    */
   tools: {
     editors: ["Neovim", "Cursor", "Xcode", "kitty"],

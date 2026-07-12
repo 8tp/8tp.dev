@@ -16,14 +16,14 @@ for (const day = new Date(start); day <= end; day.setUTCDate(day.getUTCDate() + 
 
 <section class="border border-border bg-panel">
   <div class="flex items-center justify-between border-b border-border bg-fg text-panel px-3 py-1 font-mono text-[10px] uppercase">
-    <span>// chapter 00 / contribution rhythm</span>
+    <span>// contributions</span>
     <span>github.com/8tp</span>
   </div>
   <div class="p-3 sm:p-5">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
       <div>
-        <h2 class="font-display text-xl font-black leading-none">365 day spread</h2>
-        <p class="font-mono text-[11px] text-fg-muted mt-1">cells weight by contribution count</p>
+        <h2 class="font-display text-xl font-black leading-none">last 365 days</h2>
+        <p class="font-mono text-[11px] text-fg-muted mt-1">cells shaded by contribution count</p>
       </div>
       <div class="grid grid-cols-3 sm:grid-cols-5 gap-x-3 gap-y-1 font-mono text-[11px]">
         <span><strong class="text-fg block text-sm">{formatCompact(github.profile.yearlyContributions)}</strong>contribs</span>

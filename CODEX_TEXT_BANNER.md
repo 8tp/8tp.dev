@@ -60,7 +60,7 @@ displayed at marquee size — confident, not cute.
 
 Below the wordmark, in a smaller weight-400 monospace with the same
 letter-spacing, a single line:
-  $ premium software · engineered from the basement
+  $ games, self-hosted tools, and native apps
 "$" in #9ece6a green. The rest in #737aa2 muted lavender.
 
 Optional: in the bottom-right corner, a tiny 8px dotted line drawing
