@@ -1,0 +1,73 @@
+---
+import type { ClientCase } from "~/data/clients";
+
+interface Props {
+  study: ClientCase;
+}
+
+const { study } = Astro.props;
+const host = new URL(study.website).host;
+---
+
+<article class="case" id={study.slug}>
+  <div class="case-head">
+    <h3 class="entry-name">{study.title}</h3>
+    <span class="soft">{study.year}</span>
+    <a class="link link-muted case-site" href={study.website} rel="noopener" target="_blank">
+      {host}
+    </a>
+  </div>
+
+  <p class="prose muted case-summary">{study.summary}</p>
+  <p class="stack case-stack">{study.role} · {study.stack.join(" · ")}</p>
+
+  <figure class="case-frame">
+    <img
+      src={study.image.src}
+      alt={study.image.alt}
+      width={study.image.width}
+      height={study.image.height}
+      loading="lazy"
+      decoding="async"
+    />
+    <figcaption class="soft">{study.image.caption}</figcaption>
+  </figure>
+</article>
+
+<style>
+  .case-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.75rem;
+  }
+
+  .case-site {
+    font-size: var(--text-xs);
+  }
+
+  .case-summary {
+    margin-top: 0.35rem;
+  }
+
+  .case-stack {
+    margin-top: 0.35rem;
+  }
+
+  .case-frame {
+    margin-top: 1.25rem;
+    max-width: var(--measure-wide);
+  }
+
+  .case-frame img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    border: var(--hairline) solid var(--ink-faint);
+  }
+
+  figcaption {
+    margin-top: 0.4rem;
+    font-size: var(--text-xs);
+  }
+</style>

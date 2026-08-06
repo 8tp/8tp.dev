@@ -2,21 +2,21 @@
   "name": "8tp.dev",
   "type": "module",
   "version": "1.0.0",
+  "packageManager": "pnpm@11.18.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "github:data": "node scripts/update-github-data.mjs"
+    "stills": "node scripts/capture-stills.mjs",
+    "assets": "node scripts/build-assets.mjs"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/svelte": "^8.1.0",
-    "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.1.10",
     "sharp": "^0.34.5",
-    "svelte": "^5.55.5",
-    "tailwindcss": "^4.2.4"
+    "svelte": "^5.55.5"
   }
 }

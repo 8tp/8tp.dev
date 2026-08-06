@@ -1,229 +1,384 @@
-@import "tailwindcss";
+/* ===========================================================================
+   Paper & ink — design tokens
+   ---------------------------------------------------------------------------
+   Tokens are the source of truth. Components consume variables, never raw
+   values. Palette is lifted from the startpage (github.com/8tp/startpage):
+   warm paper, near-black ink, one family of alphas for hierarchy. No second
+   brand hue — emphasis comes from weight, size and space.
 
-/* Tell Tailwind v4 where to scan for classnames - Svelte + Astro both. */
-@source "../**/*.{astro,svelte,ts,tsx,html}";
+   The page is a document: small type, left-aligned, no cards, no chrome.
+   ========================================================================= */
 
-/* Ink-on-paper palette: paper, ink, graphite, and screentone. */
-@theme {
-  --color-bg: #f3f0e8;
-  --color-bg-dark: #ebe6db;
-  --color-bg-darker: #ded7c9;
-  --color-panel: #fffdf7;
-  --color-elev: #f7f4ed;
-  --color-border: #151515;
+:root {
+  /* Surface */
+  --paper: #f6f6f3;
+  --paper-sunk: #eeeeea;
+  --control: #ffffff;
 
-  --color-fg: #090909;
-  --color-fg-dim: #252525;
-  --color-fg-muted: #565656;
-  --color-comment: #77736b;
-  --color-gutter: #bdb7aa;
+  /*
+   * Ink ramp — one hue. The startpage sets muted/soft at 59%/38%; both are
+   * nudged down here so every ink level that carries text clears WCAG AA at
+   * small sizes (muted ≈ 5.0:1 on paper). `--ink-soft` is for separators and
+   * rules only — never for a word you have to read.
+   */
+  --ink: #171816;
+  --ink-muted: rgba(23, 24, 22, 0.64);
+  --ink-soft: rgba(23, 24, 22, 0.46);
+  /* Interactive edges — link underlines. ~3:1 so the affordance stands alone. */
+  --ink-line: rgba(23, 24, 22, 0.32);
+  --ink-faint: rgba(23, 24, 22, 0.12);
+  --ink-hair: rgba(23, 24, 22, 0.08);
+  /* The wash under a hovered entry. */
+  --ink-wash: rgba(23, 24, 22, 0.05);
 
-  --color-red: #111111;
-  --color-orange: #202020;
-  --color-yellow: #2c2c2c;
-  --color-green: #151515;
-  --color-mint: #333333;
-  --color-cyan: #0b0b0b;
-  --color-blue: #242424;
-  --color-magenta: #101010;
-  --color-purple: #3a3a3a;
-  --color-pink: #111111;
+  --paper-on-ink: #f6f6f3;
 
-  --color-brand: #090909;
+  /* Backdrop dither — the one texture, and it comes from the startpage. */
+  --dither: rgba(23, 24, 22, 0.085);
+  --dither-blend: multiply;
 
-  --font-display: "Space Grotesk", "Arial Black", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /*
+   * Type — a serif carries the name and the section headings; everything you
+   * actually read is the system sans at 15px. `ui-serif` resolves to New York
+   * on Apple platforms and falls back through the old-style faces most
+   * machines already have, so there is still no webfont request.
+   */
+  --font-serif: ui-serif, "Iowan Old Style", Charter, Palatino, Georgia, serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Three working sizes plus the serif display pair. */
+  --text-xs: 0.8125rem; /* 13px — meta, captions, footer */
+  --text: 1rem; /*         16px — body */
+  --text-md: 1.0625rem; /* 17px — entry names (serif) */
+  --text-lg: 1.25rem; /*   20px — section headings (serif) */
+  --text-xl: clamp(1.75rem, 5vw, 2.125rem); /* the name (serif) */
+
+  /* Measure */
+  --measure: 34rem;
+  --measure-wide: 46rem;
+  --gutter: clamp(1.25rem, 5vw, 2rem);
+  --section-gap: clamp(2.5rem, 5vw, 3.25rem);
+
+  /* Shape */
+  --radius-sm: 0.25rem;
+  --radius: 0.375rem;
+  --radius-lg: 0.5rem;
+
+  /* Motion. --ease-in-out is symmetric and reserved for reversible state —
+     the theme dot rotating out and back. Ported from aeperion.com. */
+  --ease: cubic-bezier(0.16, 0, 0.1, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-fast: 180ms;
+  --dur: 320ms;
+
+  --hairline: 1px;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --paper: #101411;
+  --paper-sunk: #161b17;
+  --control: #191e1a;
+
+  --ink: #e8eae5;
+  --ink-muted: rgba(232, 234, 229, 0.66);
+  --ink-soft: rgba(232, 234, 229, 0.48);
+  --ink-line: rgba(232, 234, 229, 0.34);
+  --ink-faint: rgba(232, 234, 229, 0.14);
+  --ink-hair: rgba(232, 234, 229, 0.09);
+  --ink-wash: rgba(232, 234, 229, 0.06);
+
+  --paper-on-ink: #101411;
+
+  --dither: rgba(232, 234, 229, 0.07);
+  --dither-blend: screen;
+
+  color-scheme: dark;
+}
+
+/* Respect the system preference before the theme script runs, and for
+   visitors with JS disabled. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #101411;
+    --paper-sunk: #161b17;
+    --control: #191e1a;
+
+    --ink: #e8eae5;
+    --ink-muted: rgba(232, 234, 229, 0.66);
+    --ink-soft: rgba(232, 234, 229, 0.48);
+    --ink-line: rgba(232, 234, 229, 0.34);
+    --ink-faint: rgba(232, 234, 229, 0.14);
+    --ink-hair: rgba(232, 234, 229, 0.09);
+    --ink-wash: rgba(232, 234, 229, 0.06);
+
+    --paper-on-ink: #101411;
+
+    --dither: rgba(232, 234, 229, 0.07);
+    --dither-blend: screen;
+
+    color-scheme: dark;
+  }
+}
+
+/* ===========================================================================
+   Reset & base
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
 }
 
 html {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
+  background-color: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
-  scroll-behavior: smooth;
-  text-rendering: optimizeLegibility;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  min-height: 100vh;
-  background:
-    linear-gradient(90deg, rgba(9, 9, 9, 0.045) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(9, 9, 9, 0.035) 1px, transparent 1px),
-    radial-gradient(circle at 16px 16px, rgba(9, 9, 9, 0.09) 1px, transparent 1.5px),
-    var(--color-bg);
-  background-size: 44px 44px, 44px 44px, 12px 12px;
+  min-height: 100svh;
+  font-size: var(--text);
+  line-height: 1.65;
+  padding: 0 var(--gutter) env(safe-area-inset-bottom);
 }
 
-/* Custom scrollbar - printed zine style. */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--color-bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--color-fg); border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-fg-dim); }
-
-::selection {
-  background-color: var(--color-fg);
-  color: var(--color-panel);
-}
-
-/* Panels: hard ink borders, no glow, dense grid rhythm. */
-.win {
-  position: relative;
-  background-color: var(--color-panel);
-  border: 1px solid var(--color-border);
-  border-radius: 0;
-  overflow: hidden;
-  box-shadow:
-    4px 4px 0 var(--color-fg),
-    0 18px 34px -28px rgba(0, 0, 0, 0.35);
-}
-.win::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--color-fg);
-  opacity: 1;
-}
-
-.win-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0.625rem;
-  background: var(--color-fg);
-  border-bottom: 1px solid var(--color-border);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-panel);
-  min-width: 0;
-  text-transform: uppercase;
-  letter-spacing: 0;
-}
-
-.win-dots {
-  display: inline-flex;
-  gap: 0.3rem;
-  margin-right: 0.125rem;
-  flex-shrink: 0;
-}
-.win-dots > span {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 9999px;
-  border: 1px solid var(--color-panel);
-}
-.win-dots > span:nth-child(1) { background: var(--color-panel); }
-.win-dots > span:nth-child(2) { background: var(--color-comment); }
-.win-dots > span:nth-child(3) { background: var(--color-fg-muted); }
-
-.win-body {
-  padding: 0.875rem 1rem;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.11rem 0.42rem;
-  border-radius: 0;
-  background: var(--color-panel);
-  border: 1px solid color-mix(in oklab, var(--color-fg) 70%, transparent);
-  color: var(--color-fg);
-  font-size: 0.6875rem;
-  font-family: var(--font-mono);
-  white-space: nowrap;
-  line-height: 1.4;
-}
-.pill::before {
-  content: "/";
-  color: var(--color-comment);
-}
-
-/* Anchor reset must live in @layer base so Tailwind utility classes
-   like `text-panel` (in @layer utilities) can still override it.
-   Without the layer wrapper, this unlayered rule beats every utility. */
-@layer base {
-  a { color: inherit; text-decoration: none; }
-}
-
-.grain::after {
+/* Quiet paper tooth, from the startpage. Fixed, and faded out down the page
+   so it reads as a print field rather than a texture overlay. */
+body::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
-  opacity: 0.08;
-  z-index: 100;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: multiply;
+  background-image: radial-gradient(var(--dither) 0.5px, transparent 0.6px);
+  background-size: 3px 3px;
+  mix-blend-mode: var(--dither-blend);
+  -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.3) 40vh, transparent 70vh);
+  mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.3) 40vh, transparent 70vh);
 }
 
-/* No-op reveal helper: kept as a stable no-op so existing markup stays
-   valid. We dropped the entrance animation because the @starting-style
-   approach was leaving panels stuck at opacity:0 in some renderers. */
-.reveal {
-  opacity: 1;
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
-.tile {
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
 }
-.tile:hover {
-  transform: translate(-2px, -2px);
-  border-color: var(--color-fg) !important;
-  box-shadow:
-    6px 6px 0 var(--color-fg),
-    0 20px 30px -24px rgba(0, 0, 0, 0.35);
+
+/* The serif is display only: the name, and the label that opens a section. */
+h1,
+h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.25;
 }
-.tile:hover::before {
-  opacity: 1;
+
+h1 {
+  font-size: var(--text-xl);
+}
+
+h2 {
+  font-size: var(--text-lg);
+}
+
+h3 {
+  font-size: var(--text);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper-on-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-fg);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
-  border-radius: 0;
-}
-a:focus-visible,
-button:focus-visible {
-  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
 
-.ascii-rule {
-  font-family: var(--font-mono);
-  color: var(--color-comment);
-  font-size: 0.75rem;
-  letter-spacing: 0;
-  user-select: none;
-  white-space: nowrap;
-  overflow: hidden;
+/* ===========================================================================
+   Layout
+   ========================================================================= */
+
+.shell {
+  width: min(100%, var(--measure-wide));
+  margin-inline: auto;
 }
 
-.screentone {
-  background:
-    radial-gradient(circle, rgba(9, 9, 9, 0.24) 1px, transparent 1.25px),
-    var(--color-elev);
-  background-size: 7px 7px;
+.section {
+  padding-block: var(--section-gap);
 }
 
-.speed-lines {
-  background:
-    repeating-linear-gradient(
-      165deg,
-      transparent 0 12px,
-      rgba(9, 9, 9, 0.08) 12px 13px,
-      transparent 13px 22px
-    ),
-    var(--color-panel);
+.section + .section {
+  border-top: var(--hairline) solid var(--ink-hair);
 }
 
-.ink-link {
+/* Section heading: serif, sentence case, full ink. No number, no rule. */
+.section-title {
+  margin-bottom: 1.25rem;
+}
+
+/* ===========================================================================
+   Text helpers
+   ========================================================================= */
+
+.muted {
+  color: var(--ink-muted);
+}
+
+.soft {
+  color: var(--ink-soft);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose + .prose {
+  margin-top: 0.85rem;
+}
+
+/* Stack listed as plain text, not pills. */
+.stack {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+}
+
+/* ===========================================================================
+   Links — one hover language, an ink underline
+   ========================================================================= */
+
+a.link {
   text-decoration: underline;
+  text-decoration-color: var(--ink-line);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
+  transition: text-decoration-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
+a.link:hover,
+a.link:focus-visible {
+  text-decoration-color: var(--ink);
+}
+
+a.link-muted {
+  color: var(--ink-muted);
+}
+
+a.link-muted:hover,
+a.link-muted:focus-visible {
+  color: var(--ink);
+}
+
+/* ===========================================================================
+   Entry lists — the whole page is variations on this
+   ========================================================================= */
+
+.entries {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+/* Two up, the way a short list of side projects wants to read. */
+.entries-split {
+  gap: 0.25rem 1.5rem;
+}
+
+@media (min-width: 40rem) {
+  .entries-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Shared with the client case, which is not an EntryList but reads as one.
+   Serif project names — the New York/SF pairing carries the hierarchy.
+   Everything else about an entry lives in EntryList.svelte. */
+.entry-name {
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: 400;
+}
+
+/* ===========================================================================
+   Motion — reduced motion kills all of it
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: 0.5rem;
+  z-index: 50;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--paper-on-ink);
+  font-size: var(--text-xs);
+  transform: translateY(-180%);
+  transition: transform var(--dur) var(--ease);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+@media print {
+  body::before {
+    display: none;
+  }
+}

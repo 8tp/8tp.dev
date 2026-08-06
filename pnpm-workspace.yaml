@@ -1,0 +1,6 @@
+# Build scripts pnpm is allowed to run on install. sharp's postinstall fetches
+# its native binary; esbuild ships a platform binary the same way. Both are
+# needed for `pnpm build` and the asset scripts.
+allowBuilds:
+  esbuild: true
+  sharp: true
