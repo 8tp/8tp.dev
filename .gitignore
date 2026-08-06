@@ -9,3 +9,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Screenshot sources for `pnpm assets` (regenerate with `pnpm stills`)
+assets-src/

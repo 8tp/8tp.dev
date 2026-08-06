@@ -1,0 +1,30 @@
+---
+import { site } from "~/data/site";
+import { allReposUrl } from "~/data/projects";
+
+const githubUrl = site.socials.find((s) => s.label === "GitHub")?.url ?? allReposUrl;
+---
+
+<section class="intro">
+  <h1>{site.author.name}</h1>
+
+  <p class="prose muted">
+    I build realtime multiplayer games, self-hosted tools and native macOS apps, and I take on
+    commercial front-end work. Most of it started as something I wanted to exist — a server I
+    was running needed an admin panel, a game I wanted to play didn't have a browser version.
+  </p>
+
+  <!-- One line, no conditional fragments: Astro pads the seams around them and
+       the punctuation ends up floating away from the word. -->
+  <p class="prose muted">Reach me at <a class="link" href={`mailto:${site.email}`}>{site.email}</a>, or read the code on <a class="link" href={githubUrl} rel="noopener" target="_blank">GitHub</a>.</p>
+</section>
+
+<style>
+  .intro {
+    padding-block: clamp(2.5rem, 7vw, 4rem) var(--section-gap);
+  }
+
+  h1 {
+    margin-bottom: 0.9rem;
+  }
+</style>

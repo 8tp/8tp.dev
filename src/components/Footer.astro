@@ -1,0 +1,43 @@
+---
+import { site } from "~/data/site";
+
+const year = new Date().getFullYear();
+const host = new URL(site.url).host;
+const github = site.socials.find((s) => s.label === "GitHub");
+---
+
+<footer class="site-foot">
+  <p class="foot-links">
+    {
+      github && (
+        <a class="link link-muted" href={github.url} rel="me noopener" target="_blank">
+          GitHub
+        </a>
+      )
+    }
+    <a class="link link-muted" href={`mailto:${site.email}`}>Email</a>
+  </p>
+
+  <p class="foot-meta soft">
+    {site.author.name} · {host} · {year}
+  </p>
+</footer>
+
+<style>
+  .site-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: var(--section-gap) 3rem;
+    border-top: var(--hairline) solid var(--ink-hair);
+    font-size: var(--text-xs);
+  }
+
+  .foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+</style>

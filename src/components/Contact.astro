@@ -1,0 +1,26 @@
+---
+import { site } from "~/data/site";
+---
+
+<div class="contact">
+  <p class="prose muted">
+    Tell me what you are building and roughly when you need it, and I will tell you honestly
+    whether I am the right person for it.
+  </p>
+
+  <p class="contact-row">
+    <a class="link contact-email" href={`mailto:${site.email}`}>{site.email}</a>
+  </p>
+</div>
+
+<style>
+  .contact-row {
+    margin-top: 0.6rem;
+  }
+
+  .contact-email {
+    font-family: var(--font-serif);
+    font-size: var(--text-md);
+    overflow-wrap: anywhere;
+  }
+</style>
