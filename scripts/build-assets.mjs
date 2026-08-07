@@ -24,6 +24,8 @@ const LOGOS_SRC = path.resolve("assets-src/logos");
 /* Keep in step with src/styles/global.css. */
 const INK = [23, 24, 22];
 const PAPER = [246, 246, 243];
+const DARK_PAPER = [16, 20, 17];
+const DARK_INK = [232, 234, 229];
 const INK_HEX = "#171816";
 const PAPER_HEX = "#f6f6f3";
 const DARK_PAPER_HEX = "#101411";
@@ -293,6 +295,12 @@ export const isThemed = (logo: Logo): logo is { light: string; dark: string } =>
 /**
  * Crops are chosen by hand per capture: one legible region, not a whole page.
  * `out` is the path under public/.
+ *
+ * `theme: "dark"` grades onto the dark colourway instead. Aeperion ships its
+ * own light/dark switcher, so it is captured both ways and the case study
+ * swaps frames with this site's theme; grading a dark capture onto the light
+ * ramp would wash it to mud, since that ramp maps black to near-black ink and
+ * white to paper.
  */
 const STILLS = [
   {
@@ -332,6 +340,12 @@ const STILLS = [
     crop: { left: 0, top: 0, width: 2880, height: 1800 },
   },
   {
+    src: "aeperion-dark",
+    out: "clients/aeperion-after-dark.webp",
+    crop: { left: 0, top: 0, width: 2880, height: 1800 },
+    theme: "dark",
+  },
+  {
     src: "startpage",
     out: "projects/startpage.webp",
     crop: { left: 340, top: 150, width: 2200, height: 1375 },
@@ -345,20 +359,26 @@ const STILLS = [
   },
 ];
 
-/* Map [0,255] onto [ink, paper] per channel. */
-const slope = PAPER.map((p, i) => (p - INK[i]) / 255);
+/* Map [0,255] onto the theme's darkest..lightest, per channel. Light runs
+   ink -> paper; dark runs paper -> ink, because on dark stock the paper is the
+   dark end and the ink is the bright one. */
+const RAMPS = {
+  light: { from: INK, slope: PAPER.map((p, i) => (p - INK[i]) / 255) },
+  dark: { from: DARK_PAPER, slope: DARK_INK.map((v, i) => (v - DARK_PAPER[i]) / 255) },
+};
 
 let graded = 0;
 for (const still of STILLS) {
   const file = path.join(STILLS_SRC, `${still.src}.png`);
   if (!existsSync(file)) continue;
 
+  const ramp = RAMPS[still.theme ?? "light"];
   await sharp(file)
     .extract(still.crop)
     .resize(1280, 800, { fit: "cover" })
     /* Keep a trace of the product's own hue; drop the shout. */
     .modulate({ saturation: 0.62 })
-    .linear(slope, INK)
+    .linear(ramp.slope, ramp.from)
     .webp({ quality: 80 })
     .toFile(path.join(PUBLIC, still.out));
   graded += 1;

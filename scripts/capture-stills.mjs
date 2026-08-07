@@ -13,6 +13,9 @@
  *
  * Some targets need a click or two to get past a splash screen; those steps are
  * declared per target below. `js:` steps are evaluated in the page.
+ *
+ * Pass names to capture a subset — `pnpm stills aeperion aeperion-dark` — which
+ * matters because a full run walks nine live sites and takes minutes.
  */
 import { spawn } from "node:child_process";
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -35,6 +38,11 @@ const CANDIDATES = [
   "/Applications/Chromium.app/Contents/MacOS/Chromium",
 ];
 
+const aepTheme = (mode) =>
+  `js:localStorage.setItem('aep-theme','${mode}');` +
+  `document.documentElement.dataset.theme='${mode}';` +
+  `return document.documentElement.dataset.theme;`;
+
 /** name → url, plus any clicks needed to reach a representative screen. */
 const TARGETS = [
   { name: "instagib", url: "https://instagib.win", steps: ["Enter the arena", "Play as guest"] },
@@ -52,8 +60,26 @@ const TARGETS = [
       "Start Training",
     ],
   },
-  { name: "aeperion", url: "https://aeperion.com" },
+  /*
+   * Aeperion ships its own light/dark switcher, so it is captured twice and the
+   * case study swaps frames with this site's theme. Its bootstrap reads
+   * localStorage `aep-theme` and stamps `data-theme` on <html>; setting both
+   * covers the site whether it re-reads storage or watches the attribute.
+   *
+   * Light is set explicitly rather than left to the default so the two frames
+   * differ only by the thing under test.
+   */
+  { name: "aeperion", url: "https://aeperion.com", steps: [aepTheme("light")] },
+  { name: "aeperion-dark", url: "https://aeperion.com", steps: [aepTheme("dark")] },
 ];
+
+/* Optional allow-list from argv. */
+const only = new Set(process.argv.slice(2));
+const targets = only.size ? TARGETS.filter((t) => only.has(t.name)) : TARGETS;
+if (only.size && !targets.length) {
+  console.error(`No target matches ${[...only].join(", ")}.`);
+  process.exit(1);
+}
 
 const bin = CANDIDATES.find((p) => existsSync(p));
 if (!bin) {
@@ -128,7 +154,7 @@ const clickScript = (text) => `(() => {
   return 'hit';
 })()`;
 
-for (const target of TARGETS) {
+for (const target of targets) {
   try {
     await withPage(async (send) => {
       const evaluate = async (expression) =>

@@ -10,6 +10,13 @@
 
 export type Frame = {
   src: string;
+  /**
+   * Optional dark-theme capture of the same frame, graded onto the dark
+   * colourway. Only set it when the captured site has its own light/dark
+   * switcher — otherwise the frame is the same picture in both themes and a
+   * second file is dead weight.
+   */
+  srcDark?: string;
   alt: string;
   caption: string;
   width: number;
@@ -46,6 +53,7 @@ export const clients: ClientCase[] = [
     stack: ["Shopify", "Liquid", "Vanilla JS", "CSS"],
     image: {
       src: "/clients/aeperion-after.webp",
+      srcDark: "/clients/aeperion-after-dark.webp",
       alt: "The redesigned Aeperion storefront homepage",
       caption: "aeperion.com today",
       width: 1280,

@@ -36,7 +36,11 @@ const logo = logoFor(study.slug);
   <p class="stack case-stack">{study.role} · {study.stack.join(" · ")}</p>
 
   <figure class="case-frame">
+    {/* Aeperion has its own light/dark switcher, so the frame follows this
+        site's theme rather than showing a light storefront on dark paper.
+        Both are in the markup and CSS picks one, so the swap is instant. */}
     <img
+      class:list={["frame-shot", study.image.srcDark && "frame-light"]}
       src={study.image.src}
       alt={study.image.alt}
       width={study.image.width}
@@ -44,6 +48,17 @@ const logo = logoFor(study.slug);
       loading="lazy"
       decoding="async"
     />
+    {study.image.srcDark && (
+      <img
+        class="frame-shot frame-dark"
+        src={study.image.srcDark}
+        alt={study.image.alt}
+        width={study.image.width}
+        height={study.image.height}
+        loading="lazy"
+        decoding="async"
+      />
+    )}
     <figcaption class="soft">{study.image.caption}</figcaption>
   </figure>
 </article>
@@ -96,11 +111,16 @@ const logo = logoFor(study.slug);
     max-width: var(--measure-wide);
   }
 
-  .case-frame img {
+  .case-frame .frame-shot {
     width: 100%;
     height: auto;
     border-radius: var(--radius);
     border: var(--hairline) solid var(--ink-faint);
+  }
+
+  :global(html[data-theme="dark"]) .frame-light,
+  :global(html[data-theme="light"]) .frame-dark {
+    display: none;
   }
 
   figcaption {
