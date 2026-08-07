@@ -1,19 +1,33 @@
 <script>
   /**
-   * The <svg> shell every project mark is drawn into.
+   * A project's mark: its real logo where one exists, the drawn glyph where it
+   * doesn't.
    *
-   * Marks ship as inner markup only (src/data/marks.ts) so the viewBox, stroke
-   * weight and joins live in exactly one place. `currentColor` means the mark
-   * inherits whatever ink level the entry is at, in either theme, with no
-   * second asset and no second request.
+   * Five projects have no owned mark anywhere — Palhelm Bot, ScreenCap, netmap,
+   * LiteStats and Recopy — so those still render the line drawing from
+   * src/data/marks.ts. See scripts/fetch-logos.mjs for what was searched.
    *
-   * `{@html}` is safe here: the payload is a static, authored constant in this
-   * repo, never anything a visitor supplies.
+   * Themed logos ship as a light/dark pair (the source carried a
+   * prefers-color-scheme rule, which an <img> would otherwise resolve against
+   * the OS rather than this site's toggle). Both are rendered and CSS picks one
+   * off [data-theme], so switching theme never waits on a network request.
+   *
+   * `{@html}` is safe here: the glyph payload is a static constant in this repo,
+   * never anything a visitor supplies.
    */
-  let { d = "" } = $props();
+  let { d = "", logo = null, name = "" } = $props();
+
+  const themed = logo && "light" in logo;
 </script>
 
-{#if d}
+{#if logo}
+  {#if themed}
+    <img class="logo logo-light" src={logo.light} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+    <img class="logo logo-dark" src={logo.dark} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+  {:else}
+    <img class="logo" src={logo.src} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+  {/if}
+{:else if d}
   <svg
     class="mark"
     viewBox="0 0 24 24"
@@ -30,8 +44,24 @@
 {/if}
 
 <style>
-  .mark {
+  .mark,
+  .logo {
     width: 100%;
     height: 100%;
+  }
+
+  .logo {
+    /* App icons arrive as square tiles and bare glyphs alike; contain keeps
+       both honest instead of cropping the tiles. */
+    object-fit: contain;
+    /* Tiled icons read as icons; transparent glyphs are unaffected. */
+    border-radius: 22%;
+  }
+
+  /* The head script always stamps a concrete theme before first paint, so one
+     of these is always the live one — there is no unset state to cover. */
+  :global(html[data-theme="dark"]) .logo-light,
+  :global(html[data-theme="light"]) .logo-dark {
+    display: none;
   }
 </style>

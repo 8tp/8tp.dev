@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "stills": "node scripts/capture-stills.mjs",
-    "assets": "node scripts/build-assets.mjs"
+    "assets": "node scripts/build-assets.mjs",
+    "logos": "node scripts/fetch-logos.mjs"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.2",

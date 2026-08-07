@@ -1,5 +1,6 @@
 ---
 import type { ClientCase } from "~/data/clients";
+import { logoFor, isThemed } from "~/data/logos";
 
 interface Props {
   study: ClientCase;
@@ -7,10 +8,23 @@ interface Props {
 
 const { study } = Astro.props;
 const host = new URL(study.website).host;
+const logo = logoFor(study.slug);
 ---
 
 <article class="case" id={study.slug}>
   <div class="case-head">
+    {logo && (
+      <span class="case-mark" aria-hidden="true">
+        {isThemed(logo) ? (
+          <>
+            <img class="logo-light" src={logo.light} alt="" loading="lazy" decoding="async" />
+            <img class="logo-dark" src={logo.dark} alt="" loading="lazy" decoding="async" />
+          </>
+        ) : (
+          <img src={logo.src} alt="" loading="lazy" decoding="async" />
+        )}
+      </span>
+    )}
     <h3 class="entry-name">{study.title}</h3>
     <span class="soft">{study.year}</span>
     <a class="link link-muted case-site" href={study.website} rel="noopener" target="_blank">
@@ -40,6 +54,29 @@ const host = new URL(study.website).host;
     flex-wrap: wrap;
     align-items: baseline;
     gap: 0.4rem 0.75rem;
+  }
+
+  /* Sized and seated to match a project entry's mark, so the client case reads
+     as the same kind of row even though it is not an EntryList. */
+  .case-mark {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    /* Nudged off the baseline the flex row aligns to, onto the title's cap. */
+    align-self: center;
+    margin-right: -0.35rem;
+  }
+
+  .case-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 22%;
+  }
+
+  :global(html[data-theme="dark"]) .case-mark .logo-light,
+  :global(html[data-theme="light"]) .case-mark .logo-dark {
+    display: none;
   }
 
   .case-site {

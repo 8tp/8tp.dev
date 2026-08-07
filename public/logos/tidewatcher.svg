@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="markSceneClip">
+      <rect x="94" y="112" width="324" height="216" rx="42"/>
+    </clipPath>
+  </defs>
+
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="#1C1218"/>
+  <rect x="48" y="48" width="416" height="416" rx="92" fill="#2A1922" stroke="#9E677F" stroke-width="2"/>
+
+  <rect x="94" y="112" width="324" height="216" rx="42" fill="#3A2530" stroke="#B77A94" stroke-width="3"/>
+  <path d="M124 152C170 138 216 136 261 148C299 157 337 158 384 145" stroke="#FFD2E0" stroke-opacity="0.42" stroke-width="8" stroke-linecap="round"/>
+  <path d="M140 184C181 171 222 171 263 182C296 190 330 191 366 182" stroke="#FFD2E0" stroke-opacity="0.2" stroke-width="6" stroke-linecap="round"/>
+
+  <g clip-path="url(#markSceneClip)">
+    <path d="M82 264C128 236 169 226 214 230C248 233 278 247 309 252C352 260 390 252 430 229V352H82V264Z" fill="#F7B9CD"/>
+    <path d="M82 292C128 274 171 269 216 273C253 277 286 289 320 295C356 301 393 296 430 280V352H82V292Z" fill="#E08BAE"/>
+    <path d="M82 314C130 304 175 303 221 309C258 314 291 326 326 331C362 336 398 333 430 322V352H82V314Z" fill="#B86C8F"/>
+  </g>
+
+  <path d="M112 279C151 265 187 262 225 267C262 273 296 287 332 292C363 296 391 292 414 280" stroke="#FFD2E0" stroke-width="7" stroke-linecap="round"/>
+
+  <rect x="360" y="132" width="38" height="170" rx="16" fill="#FFF2F5"/>
+  <rect x="370" y="148" width="18" height="5" rx="2.5" fill="#9E677F"/>
+  <rect x="370" y="172" width="18" height="5" rx="2.5" fill="#9E677F"/>
+  <rect x="370" y="196" width="18" height="5" rx="2.5" fill="#9E677F"/>
+  <rect x="370" y="220" width="18" height="5" rx="2.5" fill="#9E677F"/>
+  <rect x="370" y="244" width="18" height="5" rx="2.5" fill="#9E677F"/>
+  <rect x="370" y="268" width="18" height="5" rx="2.5" fill="#9E677F"/>
+  <rect x="360" y="236" width="38" height="66" rx="16" fill="#F497B8"/>
+  <path d="M344 269H412" stroke="#FFD2E0" stroke-width="6" stroke-linecap="round"/>
+
+  <circle cx="126" cy="100" r="8" fill="#F7B9CD" fill-opacity="0.9"/>
+  <circle cx="152" cy="82" r="10" fill="#FFD2E0" fill-opacity="0.82"/>
+  <circle cx="182" cy="100" r="8" fill="#F497B8" fill-opacity="0.88"/>
+
+  <path d="M118 386H394" stroke="#D6B1BE" stroke-opacity="0.16" stroke-width="3"/>
+  <path d="M136 414H376" stroke="#D6B1BE" stroke-opacity="0.1" stroke-width="3"/>
+</svg>

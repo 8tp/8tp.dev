@@ -117,7 +117,7 @@
         onfocus={(e) => focusEntry(e, entry)}
         onblur={leave}
       >
-        <span class="entry-mark"><Mark d={entry.mark} /></span>
+        <span class="entry-mark"><Mark d={entry.mark} logo={entry.logo} /></span>
 
         <!-- A real heading inside the link, so the list is navigable by
              heading. `<a>` is transparent content, so flow content is valid
@@ -173,7 +173,7 @@
 
     /* The mark column. Everything that has to line up under the entry name —
        the stack line, the source link — is indented by exactly this much. */
-    --mark: 1.375rem;
+    --mark: 1.75rem;
     --mark-gap: 0.7rem;
   }
 
