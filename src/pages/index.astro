@@ -5,6 +5,7 @@ import EntryList from "~/components/EntryList.svelte";
 import ClientCase from "~/components/ClientCase.astro";
 import Contact from "~/components/Contact.astro";
 import { featured, more, childrenOf, type Project } from "~/data/projects";
+import { markFor } from "~/data/marks";
 import { clients } from "~/data/clients";
 
 /** Flatten a Project into the shape EntryList renders. */
@@ -16,6 +17,7 @@ const toEntry = (project: Project, { stack = true } = {}) => ({
   href: project.website ?? project.source,
   sourceHref: project.source,
   preview: project.preview ?? null,
+  mark: markFor(project.slug),
 });
 
 /* Children sit directly under their parent rather than in a tier of their own. */

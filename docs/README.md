@@ -15,6 +15,7 @@
 | **[redesign/00-brief.md](./redesign/00-brief.md)** | Master synthesis (strategy + content + IA) |
 | **[redesign/05-design-system.md](./redesign/05-design-system.md)** | Tokens, refs, ban list (agent source of truth) |
 | **[anti-slop/](./anti-slop/)** | Full anti-slop design research pack (copied from `~/design-research`) |
+| **[writing/00-plan.md](./writing/00-plan.md)** | Build-note plan — standalone pages hung off projects, **not** a blog |
 
 ---
 

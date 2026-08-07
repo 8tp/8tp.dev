@@ -36,6 +36,10 @@
   /* Backdrop dither — the one texture, and it comes from the startpage. */
   --dither: rgba(23, 24, 22, 0.085);
   --dither-blend: multiply;
+  /* Dot pitch, and how far the plate drifts per cycle. Travel must stay a
+     whole multiple of the pitch or the loop seams. */
+  --plate-tile: 3px;
+  --plate-travel: 24px;
 
   /*
    * Type — a serif carries the name and the section headings; everything you
@@ -155,18 +159,54 @@ body {
 }
 
 /* Quiet paper tooth, from the startpage. Fixed, and faded out down the page
-   so it reads as a print field rather than a texture overlay. */
+   so it reads as a print field rather than a texture overlay.
+
+   The overhang is what lets it drift: the plate travels a little way down and
+   right, so it has to start outside the viewport on every side or the leading
+   edges would strip. */
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
+  inset: calc(-1 * var(--plate-travel) - 1rem);
   z-index: -1;
   pointer-events: none;
   background-image: radial-gradient(var(--dither) 0.5px, transparent 0.6px);
-  background-size: 3px 3px;
+  background-size: var(--plate-tile) var(--plate-tile);
   mix-blend-mode: var(--dither-blend);
   -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.3) 40vh, transparent 70vh);
   mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.3) 40vh, transparent 70vh);
+}
+
+/*
+  The drifting plate — the startpage's dither shader, which this texture was
+  lifted from, finally moving. Two things make it cheap enough to leave running
+  forever:
+
+  1. It travels a whole number of tiles (8 x 3px), so the end state is pixel-
+     identical to the start and the loop never shows a seam. No cross-fade, no
+     reset flicker.
+  2. It animates `translate` rather than `background-position`, so the layer is
+     handed to the compositor instead of repainting a viewport-sized gradient
+     every frame.
+
+  The mask travels with the layer, but 24px of drift against a fade that runs
+  over 70vh is not a shift anyone can see.
+
+  Speed is deliberately below the threshold where you'd catch it moving —
+  roughly 1.3px a second. It should register as the paper being alive, not as
+  something animating.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  body::before {
+    animation: plate-drift 18s linear infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes plate-drift {
+  to {
+    translate: var(--plate-travel) var(--plate-travel);
+  }
 }
 
 img,

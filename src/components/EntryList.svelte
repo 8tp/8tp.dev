@@ -13,7 +13,13 @@
    *
    * Desktop only — this island is mounted with client:media, so touch devices
    * never hydrate it and the markup they get is a plain list of links.
+   *
+   * The one thing touch devices *do* get is the mark: a line drawing per
+   * project in the left column. It carries the weight the hover preview
+   * carries on desktop, where the list would otherwise be a wall of prose.
    */
+  import Mark from "./Mark.svelte";
+
   let { entries = [], split = false } = $props();
 
   let list; // the <ul>, positioning context and coordinate origin
@@ -111,10 +117,16 @@
         onfocus={(e) => focusEntry(e, entry)}
         onblur={leave}
       >
+        <span class="entry-mark"><Mark d={entry.mark} /></span>
+
         <!-- A real heading inside the link, so the list is navigable by
-             heading. `<a>` is transparent content, so this is valid. -->
-        <h3 class="entry-name">{entry.name}</h3>
-        <span class="entry-body muted">{entry.blurb}</span>
+             heading. `<a>` is transparent content, so flow content is valid
+             here — which is also why the text column is a div and not a span,
+             since a span may only hold phrasing content. -->
+        <div class="entry-text">
+          <h3 class="entry-name">{entry.name}</h3>
+          <span class="entry-body muted">{entry.blurb}</span>
+        </div>
       </a>
 
       {#if entry.stack?.length || entry.sourceHref}
@@ -158,6 +170,11 @@
 <style>
   .entries {
     position: relative;
+
+    /* The mark column. Everything that has to line up under the entry name —
+       the stack line, the source link — is indented by exactly this much. */
+    --mark: 1.375rem;
+    --mark-gap: 0.7rem;
   }
 
   .entry-wrap {
@@ -173,7 +190,26 @@
   }
 
   .entry {
+    display: grid;
+    grid-template-columns: var(--mark) minmax(0, 1fr);
+    gap: var(--mark-gap);
+    align-items: start;
+  }
+
+  /* Optically seated against the serif name's cap height rather than its line
+     box, which sits the mark a hair low if you leave it to `align-items`. */
+  .entry-mark {
     display: block;
+    width: var(--mark);
+    height: var(--mark);
+    margin-top: 0.2rem;
+    color: var(--ink-soft);
+    transition: color var(--dur-fast) var(--ease);
+  }
+
+  .entry-wrap:hover .entry-mark,
+  .entry-wrap:focus-within .entry-mark {
+    color: var(--ink);
   }
 
   .entry-body {
@@ -187,6 +223,8 @@
     align-items: baseline;
     gap: 0.15rem 0.75rem;
     margin-top: 0.15rem;
+    /* Hang under the text column, not under the mark. */
+    padding-left: calc(var(--mark) + var(--mark-gap));
   }
 
   .stack {
