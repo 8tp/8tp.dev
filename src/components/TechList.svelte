@@ -11,9 +11,9 @@
   <ul class="tech" aria-label="Built with">
     {#each items as item (item.name)}
       <li class="tech-item">
-        {#if item.path}
+        {#if item.id}
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" style:color={item.color}>
-            <path d={item.path} fill="currentColor" />
+            <use href="#{item.id}" />
           </svg>
         {/if}
         {item.name}

@@ -3,9 +3,13 @@
  * here end up in the build.
  *
  * A name with no icon still renders, as text only (Liquid has no mark in the
- * set). Brand colours that would vanish on one of the two paper colours (pure
- * black for Three.js and Next.js, white for Better Auth) fall back to ink, so
- * every mark stays legible in both themes.
+ * set). Each path is written into the page once, as a <symbol> in Sprite.astro,
+ * and every logo after that is a <use> reference, so a stack that repeats
+ * TypeScript five times doesn't ship its outline five times.
+ *
+ * Brand colours that would vanish on one of the two paper colours (pure black
+ * for Three.js and Next.js, white for Better Auth) fall back to ink, so every
+ * mark stays legible in both themes.
  */
 import {
   siBetterauth,
@@ -60,8 +64,8 @@ const icons: Record<string, SimpleIcon> = {
 
 export type Tech = {
   name: string;
-  /** SVG path in a 24x24 box, or null for text-only entries. */
-  path: string | null;
+  /** Sprite symbol id, or null for text-only entries. */
+  id: string | null;
   /** Brand colour when it reads on both papers; null means use ink. */
   color: string | null;
 };
@@ -81,15 +85,21 @@ const legible = (hex: string) => {
   return l > 0.03 && l < 0.7;
 };
 
+const symbolId = (name: string) => `si-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
 export const tech = (names: string[] = []): Tech[] =>
   names.map((name) => {
     const icon = icons[name];
     return {
       name,
-      path: icon?.path ?? null,
+      id: icon ? symbolId(name) : null,
       color: icon && legible(icon.hex) ? `#${icon.hex}` : null,
     };
   });
+
+/** Every symbol the sprite needs for these names, each once. */
+export const symbolsFor = (names: string[]) =>
+  [...new Set(names)].filter((n) => icons[n]).map((n) => ({ id: symbolId(n), path: icons[n].path }));
 
 /** Interface glyphs, 24x24. GitHub is filled; mail is drawn with a stroke. */
 export const glyphs = {

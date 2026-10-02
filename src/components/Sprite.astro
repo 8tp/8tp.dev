@@ -1,0 +1,35 @@
+---
+/**
+ * One hidden SVG holding every logo and glyph the page draws more than once.
+ * TechList and Glyph render <use> references into it.
+ */
+import { projects } from "~/data/projects";
+import { clients } from "~/data/clients";
+import { glyphs, symbolsFor } from "~/data/stack";
+
+const names = [...projects, ...clients].flatMap((entry) => entry.stack ?? []);
+const symbols = symbolsFor(names);
+---
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  {
+    symbols.map(({ id, path }) => (
+      <symbol id={id} viewBox="0 0 24 24">
+        <path d={path} fill="currentColor" />
+      </symbol>
+    ))
+  }
+  <symbol id="g-github" viewBox="0 0 24 24"><path d={glyphs.github} fill="currentColor" /></symbol>
+  <symbol id="g-mail" viewBox="0 0 24 24">
+    <path d={glyphs.mail} fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
+  </symbol>
+</svg>
+
+<style>
+  .sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+</style>

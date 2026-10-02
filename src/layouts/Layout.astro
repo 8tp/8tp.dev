@@ -6,6 +6,7 @@ import Footer from "~/components/Footer.astro";
 import Trailer from "~/components/Trailer.astro";
 import Glyph from "~/components/Glyph.svelte";
 import Backdrop from "~/components/Backdrop.astro";
+import Sprite from "~/components/Sprite.astro";
 import { allReposUrl } from "~/data/projects";
 
 interface Props {
@@ -99,6 +100,7 @@ const personSchema = {
   </head>
 
   <body>
+    <Sprite />
     <Backdrop />
     <a class="skip-link" href="#main">Skip to content</a>
 

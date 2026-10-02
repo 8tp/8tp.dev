@@ -1,20 +1,14 @@
 <script>
   /**
    * A small interface glyph that sits in front of a link label: the GitHub
-   * mark or the mail envelope. Decorative, since the label says the same thing.
+   * mark or the mail envelope, drawn from the page sprite (Sprite.astro).
+   * Decorative, since the label says the same thing.
    */
-  import { glyphs } from "~/data/stack";
-
   let { name } = $props();
-  const stroked = name === "mail";
 </script>
 
 <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-  {#if stroked}
-    <path d={glyphs[name]} fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
-  {:else}
-    <path d={glyphs[name]} fill="currentColor" />
-  {/if}
+  <use href="#g-{name}" />
 </svg>
 
 <style>
