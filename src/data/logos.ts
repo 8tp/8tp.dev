@@ -16,20 +16,27 @@ export const logos: Record<string, Logo> = {
     "light": "/logos/aeperion-light.svg",
     "dark": "/logos/aeperion-dark.svg"
   },
-  "antmaze": {
-    "src": "/logos/antmaze.svg"
+  "aimperion": {
+    "light": "/logos/aimperion-light.svg",
+    "dark": "/logos/aimperion-dark.svg"
+  },
+  "chudopoly": {
+    "src": "/logos/chudopoly.svg"
   },
   "coup": {
     "src": "/logos/coup.webp"
   },
-  "hudaim": {
-    "src": "/logos/hudaim.svg"
+  "hatchdle": {
+    "src": "/logos/hatchdle.webp"
   },
   "imprimatur": {
     "src": "/logos/imprimatur.webp"
   },
   "instagib-arena": {
     "src": "/logos/instagib-arena.svg"
+  },
+  "mouserank": {
+    "src": "/logos/mouserank.svg"
   },
   "palhelm": {
     "src": "/logos/palhelm.svg"
@@ -38,17 +45,8 @@ export const logos: Record<string, Logo> = {
     "light": "/logos/startpage-light.svg",
     "dark": "/logos/startpage-dark.svg"
   },
-  "tidewatcher": {
-    "src": "/logos/tidewatcher.svg"
-  },
-  "typeduel": {
-    "src": "/logos/typeduel.svg"
-  },
   "vitals": {
     "src": "/logos/vitals.svg"
-  },
-  "wc26-bracket": {
-    "src": "/logos/wc26-bracket.svg"
   }
 };
 

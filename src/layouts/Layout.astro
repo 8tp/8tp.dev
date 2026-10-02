@@ -3,13 +3,20 @@ import "~/styles/global.css";
 import { site } from "~/data/site";
 import ThemeToggle from "~/components/ThemeToggle.svelte";
 import Footer from "~/components/Footer.astro";
+import Trailer from "~/components/Trailer.astro";
+import Glyph from "~/components/Glyph.svelte";
+import Backdrop from "~/components/Backdrop.astro";
+import { allReposUrl } from "~/data/projects";
 
 interface Props {
   title?: string;
   description?: string;
+  /** The home page carries the name as its h1; other pages link back to it. */
+  home?: boolean;
 }
 
-const { title = site.seoTitle, description = site.description } = Astro.props;
+const { title = site.seoTitle, description = site.description, home = false } = Astro.props;
+const github = site.socials.find((s) => s.label === "GitHub")?.url ?? allReposUrl;
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 const ogImage = new URL(site.og.image, site.url).toString();
 
@@ -92,11 +99,26 @@ const personSchema = {
   </head>
 
   <body>
+    <Backdrop />
     <a class="skip-link" href="#main">Skip to content</a>
 
     <div class="page shell">
+      <!-- Letterhead: name on the left, the two ways to reach me on the right. -->
       <header class="site-head">
-        <ThemeToggle client:idle />
+        {
+          home ? (
+            <h1 class="wordmark">{site.author.name}</h1>
+          ) : (
+            <a class="wordmark" href="/">
+              {site.author.name}
+            </a>
+          )
+        }
+        <nav class="head-links" aria-label="Contact">
+          <a class="link link-muted" href={`mailto:${site.email}`}><Glyph name="mail" />Email</a>
+          <a class="link link-muted" href={github} rel="me noopener" target="_blank"><Glyph name="github" />GitHub</a>
+          <ThemeToggle client:idle />
+        </nav>
       </header>
 
       <!-- tabindex="-1" so the skip link moves focus, not just the viewport. -->
@@ -107,12 +129,30 @@ const personSchema = {
       <Footer />
     </div>
 
+    <Trailer />
+
     <style>
       .site-head {
         display: flex;
-        justify-content: flex-end;
-        padding-block: 0.75rem 0;
-        /* The toggle's 2rem box sits flush with the measure. */
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 1.25rem;
+      }
+
+      .wordmark {
+        font-family: var(--font-serif);
+        font-size: var(--text-md);
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      .head-links {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+        font-size: var(--text-xs);
+        /* The toggle's 2rem box sits flush with the page edge. */
         margin-right: -0.5rem;
       }
     </style>

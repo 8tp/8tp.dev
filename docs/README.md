@@ -10,6 +10,7 @@
 
 | Path | What |
 |------|------|
+| **[redesign-v3/00-plan.md](./redesign-v3/00-plan.md)** | **v3 plan (Oct 2026)**: client-first, roster cuts, project pages, video, hunterm.dev |
 | **[redesign/CHANGELOG-REDESIGN.md](./redesign/CHANGELOG-REDESIGN.md)** | **What the rebuild changed**, how to run it, and what to swap for domain/email/avatar |
 | **[redesign/OPUS-PROMPT.md](./redesign/OPUS-PROMPT.md)** | **Paste this into Opus 5** — full build + orchestration brief |
 | **[redesign/00-brief.md](./redesign/00-brief.md)** | Master synthesis (strategy + content + IA) |

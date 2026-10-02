@@ -28,8 +28,6 @@ const DARK_PAPER = [16, 20, 17];
 const DARK_INK = [232, 234, 229];
 const INK_HEX = "#171816";
 const PAPER_HEX = "#f6f6f3";
-const DARK_PAPER_HEX = "#101411";
-const DARK_INK_HEX = "#e8eae5";
 
 /* Concrete families: librsvg resolves through fontconfig, not the CSS
    `ui-serif` / `ui-sans-serif` keywords the site uses. */
@@ -44,35 +42,28 @@ mkdirSync(path.join(PUBLIC, "logos"), { recursive: true });
 /* ------------------------------------------------------------------ identity */
 
 /**
- * A quiet H monogram: paper letterform knocked out of an ink tile. Reversed
- * rather than ink-on-paper because a filled tile is what survives a 16px
- * browser tab. The internal media query flips it for dark UI.
+ * The mark: a lowercase serif h in paper, knocked out of an ink tile. A filled
+ * tile is what survives a 16px browser tab, and lowercase serif keeps it from
+ * reading as a dating-app capital H. The tile stays ink in both themes.
+ *
+ * The outline is the "h" from Source Serif 4 Semibold (Adobe, SIL Open Font
+ * License, which permits embedding glyph outlines in a logo), placed in the
+ * 64x64 box with opentype.js. Semibold because Regular thins out at 16px and
+ * Bold fills its counter in.
  */
-const H_PATH = "M17 15h7.5v13.2h15V15H47v34h-7.5V35.4h-15V49H17z";
+const H_PATH =
+  "M30.05 50.85L17.70 50.85L17.70 48.80L21.00 48.15Q21.05 46.30 21.05 44.13Q21.05 41.95 21.05 40.35L21.05 40.35L21.05 18.85L17.40 18.35L17.40 16.40L26.30 14.15L27.05 14.60L26.85 21.70L26.85 30.65Q30.75 26.20 35.45 26.20L35.45 26.20Q38.70 26.20 40.47 28.35Q42.25 30.50 42.25 35.15L42.25 35.15L42.25 40.35Q42.25 42.05 42.25 44.17Q42.25 46.30 42.30 48.20L42.30 48.20L45.40 48.80L45.40 50.85L33.05 50.85L33.05 48.80L36.25 48.15Q36.30 46.30 36.30 44.17Q36.30 42.05 36.30 40.35L36.30 40.35L36.30 35.65Q36.30 32.65 35.52 31.52Q34.75 30.40 32.85 30.40L32.85 30.40Q30.10 30.40 27.00 33.30L27.00 33.30L27.00 40.35Q27.00 42 27.00 44.15Q27.00 46.30 27.05 48.20L27.05 48.20L30.05 48.80L30.05 50.85Z";
 
-const monogram = (tile, mark, style = "") =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">${style}
+const monogram = (tile, mark) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <rect width="64" height="64" rx="14" fill="${tile}" />
   <path d="${H_PATH}" fill="${mark}" />
 </svg>
 `;
 
-writeFileSync(
-  path.join(PUBLIC, "favicon.svg"),
-  monogram(
-    INK_HEX,
-    PAPER_HEX,
-    `
-  <style>
-    @media (prefers-color-scheme: dark) {
-      rect { fill: ${DARK_INK_HEX}; }
-      path { fill: ${DARK_PAPER_HEX}; }
-    }
-  </style>`,
-  ),
-);
+writeFileSync(path.join(PUBLIC, "favicon.svg"), monogram(INK_HEX, PAPER_HEX));
 
-/** Rasters bake the light colourway; the SVG covers theme-aware clients. */
+/** Rasters use the same colours as the SVG. */
 const rasterSvg = monogram(INK_HEX, PAPER_HEX);
 
 async function png(size, { flatten = false } = {}) {
@@ -306,23 +297,18 @@ const STILLS = [
   {
     src: "instagib",
     out: "projects/instagib-arena.webp",
-    crop: { left: 320, top: 30, width: 1290, height: 806 },
+    crop: { left: 0, top: 0, width: 2880, height: 1800 },
   },
   {
     src: "palhelm",
     out: "projects/palhelm.webp",
     crop: { left: 340, top: 1540, width: 2200, height: 1375 },
   },
-  { src: "coup", out: "projects/coup.webp", crop: { left: 800, top: 560, width: 1400, height: 875 } },
+  { src: "coup", out: "projects/coup.webp", crop: { left: 480, top: 180, width: 1920, height: 1200 } },
   {
     src: "imprimatur",
     out: "projects/imprimatur.webp",
     crop: { left: 114, top: 70, width: 2148, height: 1342 },
-  },
-  {
-    src: "typeduel",
-    out: "projects/typeduel.webp",
-    crop: { left: 560, top: 300, width: 1866, height: 1166 },
   },
   {
     src: "vitals",
@@ -330,26 +316,29 @@ const STILLS = [
     crop: { left: 300, top: 260, width: 2200, height: 1375 },
   },
   {
-    src: "hudaim",
-    out: "projects/hudaim.webp",
-    crop: { left: 200, top: 150, width: 2480, height: 1550 },
-  },
-  {
-    src: "aeperion",
-    out: "clients/aeperion-after.webp",
-    crop: { left: 0, top: 0, width: 2880, height: 1800 },
-  },
-  {
-    src: "aeperion-dark",
-    out: "clients/aeperion-after-dark.webp",
-    crop: { left: 0, top: 0, width: 2880, height: 1800 },
-    theme: "dark",
-  },
-  {
     src: "startpage",
     out: "projects/startpage.webp",
     crop: { left: 340, top: 150, width: 2200, height: 1375 },
   },
+  { src: "hatchdle", out: "projects/hatchdle.webp", crop: { left: 240, top: 0, width: 2400, height: 1500 } },
+  { src: "aimperion", out: "projects/aimperion.webp", crop: { left: 0, top: 0, width: 2880, height: 1800 } },
+  { src: "chudopoly", out: "projects/chudopoly.webp", crop: { left: 0, top: 0, width: 2880, height: 1800 } },
+  /* Dark-theme captures of sites that have one; the peek swaps to them. */
+  {
+    src: "palhelm-dark",
+    out: "projects/palhelm-dark.webp",
+    crop: { left: 340, top: 1540, width: 2200, height: 1375 },
+    theme: "dark",
+  },
+  { src: "chudopoly-dark", out: "projects/chudopoly-dark.webp", crop: { left: 0, top: 0, width: 2880, height: 1800 }, theme: "dark" },
+  /*
+   * Full-length pages for the client frames, which scroll on hover. `tall`
+   * keeps the whole height instead of cropping to 16:10.
+   */
+  { src: "aeperion-tall", out: "clients/aeperion-scroll.webp", tall: true },
+  { src: "aeperion-tall-dark", out: "clients/aeperion-scroll-dark.webp", tall: true, theme: "dark" },
+  { src: "mouserank-tall", out: "clients/mouserank-scroll.webp", tall: true },
+  { src: "mouserank-tall-dark", out: "clients/mouserank-scroll-dark.webp", tall: true, theme: "dark" },
   /* Drop a pre-redesign capture here and it grades with everything else. */
   {
     src: "aeperion-before",
@@ -373,9 +362,8 @@ for (const still of STILLS) {
   if (!existsSync(file)) continue;
 
   const ramp = RAMPS[still.theme ?? "light"];
-  await sharp(file)
-    .extract(still.crop)
-    .resize(1280, 800, { fit: "cover" })
+  const base = sharp(file);
+  await (still.tall ? base.resize({ width: 1280 }) : base.extract(still.crop).resize(1280, 800, { fit: "cover" }))
     /* Keep a trace of the product's own hue; drop the shout. */
     .modulate({ saturation: 0.62 })
     .linear(ramp.slope, ramp.from)

@@ -1,5 +1,7 @@
 # Domains & email
 
+> **Superseded 2026-10-02:** Hunter owns **hunterm.dev** (registered 2026-08-05). See [../redesign-v3/research/domains.md](../redesign-v3/research/domains.md).
+
 **Posture:** Prefer a **human name** domain for client trust. Keep GitHub **@8tp**. Drop heavy “8tp” site branding long-term.  
 **DNS notes below are not purchase guarantees** — confirm at a registrar.
 

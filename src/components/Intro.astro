@@ -1,30 +1,51 @@
 ---
 import { site } from "~/data/site";
-import { allReposUrl } from "~/data/projects";
-
-const githubUrl = site.socials.find((s) => s.label === "GitHub")?.url ?? allReposUrl;
 ---
 
-<section class="intro">
-  <h1>{site.author.name}</h1>
-
-  <p class="prose muted">
-    I build realtime multiplayer games, self-hosted tools and native macOS apps, and I take on
-    commercial front-end work. Most of it started as something I wanted to exist — a server I
-    was running needed an admin panel, a game I wanted to play didn't have a browser version.
+<!-- The opening row of the page grid: who, in the label column; what, in the
+     content column, set large enough to read as a statement. -->
+<section class="intro grid" aria-label="Introduction">
+  <p class="who meta">
+    {site.role}<br />
+    {site.author.location}
   </p>
 
-  <!-- One line, no conditional fragments: Astro pads the seams around them and
-       the punctuation ends up floating away from the word. -->
-  <p class="prose muted">Reach me at <a class="link" href={`mailto:${site.email}`}>{site.email}</a>, or read the code on <a class="link" href={githubUrl} rel="noopener" target="_blank">GitHub</a>.</p>
+  <div>
+    <p class="lede">{site.tagline}</p>
+
+    <p class="prose">
+      For clients, that has meant a Shopify storefront and an aim trainer for a mousepad maker,
+      and a mouse-ranking site for a YouTube reviewer. My own projects range from a browser shooter
+      to a Mac app for filling in PDF forms.
+    </p>
+
+    {site.availability && <p class="prose">{site.availability}</p>}
+  </div>
 </section>
 
 <style>
   .intro {
-    padding-block: clamp(2.5rem, 7vw, 4rem) var(--section-gap);
+    padding-block: clamp(2.5rem, 8vw, 5.5rem) var(--section-gap);
   }
 
-  h1 {
-    margin-bottom: 0.9rem;
+  .who {
+    line-height: 1.6;
+  }
+
+  @media (min-width: 52rem) {
+    /* Sit on the lede's first line rather than the top of its line box. */
+    .who {
+      padding-top: 0.5rem;
+    }
+  }
+
+  .lede {
+    font-family: var(--font-serif);
+    font-size: var(--text-xl);
+    line-height: 1.22;
+    letter-spacing: -0.005em;
+    max-width: 22em;
+    text-wrap: balance;
+    margin-bottom: 1.4rem;
   }
 </style>

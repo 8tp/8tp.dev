@@ -1,44 +1,68 @@
 ---
 import type { ClientCase } from "~/data/clients";
 import { logoFor, isThemed } from "~/data/logos";
+import { tech } from "~/data/stack";
+import TechList from "~/components/TechList.svelte";
 
 interface Props {
   study: ClientCase;
+  /** Further work for the same client, rendered inside this case. */
+  under?: ClientCase[];
+  /** Set when this case is itself rendered inside a parent. */
+  nested?: boolean;
 }
 
-const { study } = Astro.props;
+const { study, under = [], nested = false } = Astro.props;
 const host = new URL(study.website).host;
 const logo = logoFor(study.slug);
+const meta = study.client ? `${study.role}, ${study.client}` : study.role;
 ---
 
-<article class="case" id={study.slug}>
-  <div class="case-head">
-    {logo && (
-      <span class="case-mark" aria-hidden="true">
-        {isThemed(logo) ? (
-          <>
-            <img class="logo-light" src={logo.light} alt="" loading="lazy" decoding="async" />
-            <img class="logo-dark" src={logo.dark} alt="" loading="lazy" decoding="async" />
-          </>
-        ) : (
-          <img src={logo.src} alt="" loading="lazy" decoding="async" />
-        )}
-      </span>
-    )}
-    <h3 class="entry-name">{study.title}</h3>
-    <span class="soft">{study.year}</span>
-    <a class="link link-muted case-site" href={study.website} rel="noopener" target="_blank">
-      {host}
-    </a>
-  </div>
+<article class:list={["case", nested && "is-nested"]} id={study.slug}>
+  <header class="case-head">
+    {
+      logo && (
+        <span class="mark-box" aria-hidden="true">
+          {isThemed(logo) ? (
+            <>
+              <img class="logo-light" src={logo.light} alt="" loading="lazy" decoding="async" />
+              <img class="logo-dark" src={logo.dark} alt="" loading="lazy" decoding="async" />
+            </>
+          ) : (
+            <img src={logo.src} alt="" loading="lazy" decoding="async" />
+          )}
+        </span>
+      )
+    }
+    {nested ? <h4 class="case-name">{study.name}</h4> : <h3 class="case-name">{study.name}</h3>}
+    <p class="case-links">
+      {
+        study.trailer && (
+          <button class="link link-muted" type="button" data-trailer={study.trailer} data-title={study.name}>
+            Trailer
+          </button>
+        )
+      }
+      <a class="link link-muted out" href={study.website} rel="noopener" target="_blank">
+        {host}
+      </a>
+    </p>
+  </header>
 
-  <p class="prose muted case-summary">{study.summary}</p>
-  <p class="stack case-stack">{study.role} · {study.stack.join(" · ")}</p>
+  <p class="meta case-meta">{meta}</p>
 
-  <figure class="case-frame">
-    {/* Aeperion has its own light/dark switcher, so the frame follows this
-        site's theme rather than showing a light storefront on dark paper.
-        Both are in the markup and CSS picks one, so the swap is instant. */}
+  {study.summary.map((para) => <p class="prose">{para}</p>)}
+
+  <div class="case-tech"><TechList items={tech(study.stack)} /></div>
+
+  <figure
+    class:list={["case-frame", study.image.scroll && "scrolls"]}
+    tabindex={study.image.scroll ? 0 : undefined}
+    aria-label={study.image.scroll ? `${study.image.alt}. Hover or focus to scroll through the page.` : undefined}
+  >
+    {/* When the captured site has its own light/dark theme, both frames are in
+        the markup and CSS picks the one matching this site's theme, so the
+        swap is instant. Only the visible one is fetched. */}
     <img
       class:list={["frame-shot", study.image.srcDark && "frame-light"]}
       src={study.image.src}
@@ -48,83 +72,173 @@ const logo = logoFor(study.slug);
       loading="lazy"
       decoding="async"
     />
-    {study.image.srcDark && (
-      <img
-        class="frame-shot frame-dark"
-        src={study.image.srcDark}
-        alt={study.image.alt}
-        width={study.image.width}
-        height={study.image.height}
-        loading="lazy"
-        decoding="async"
-      />
-    )}
-    <figcaption class="soft">{study.image.caption}</figcaption>
+    {
+      study.image.srcDark && (
+        <img
+          class="frame-shot frame-dark"
+          src={study.image.srcDark}
+          alt={study.image.alt}
+          width={study.image.width}
+          height={study.image.height}
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
+    {
+      study.image.scroll && (
+        <figcaption class="frame-hint meta" aria-hidden="true">
+          <span class="hint-hover">Hover to scroll the page</span>
+          <span class="hint-touch">Tap to scroll the page</span>
+        </figcaption>
+      )
+    }
   </figure>
+
+  {under.map((child) => <Astro.self study={child} nested />)}
 </article>
 
 <style>
+  .case + :global(.case) {
+    margin-top: var(--section-gap);
+  }
+
   .case-head {
     display: flex;
-    flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.4rem 0.75rem;
+    gap: 0.6rem;
   }
 
-  /* Sized and seated to match a project entry's mark, so the client case reads
-     as the same kind of row even though it is not an EntryList. */
-  .case-mark {
-    flex: none;
-    width: 1.75rem;
-    height: 1.75rem;
-    /* Nudged off the baseline the flex row aligns to, onto the title's cap. */
+  .case-head .mark-box {
     align-self: center;
-    margin-right: -0.35rem;
   }
 
-  .case-mark img {
+  .case-head .mark-box img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     border-radius: 22%;
   }
 
-  :global(html[data-theme="dark"]) .case-mark .logo-light,
-  :global(html[data-theme="light"]) .case-mark .logo-dark {
+  :global(html[data-theme="dark"]) .case-head .logo-light,
+  :global(html[data-theme="light"]) .case-head .logo-dark {
     display: none;
   }
 
-  .case-site {
+  .case-name {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.3;
+    font-size: var(--text-lg);
+  }
+
+  .case-links {
+    display: flex;
+    gap: 0.9rem;
+    margin-left: auto;
     font-size: var(--text-xs);
+    white-space: nowrap;
   }
 
-  .case-summary {
-    margin-top: 0.35rem;
+  .case-links button {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--ink-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
   }
 
-  .case-stack {
-    margin-top: 0.35rem;
+  /* More work for the same client: inside the parent's block, set in from the
+     left by a rule rather than a box, so it reads as a continuation. */
+  .case.is-nested {
+    margin-top: 2.25rem;
+    padding-left: 1.25rem;
+    border-left: var(--hairline) solid var(--ink-faint);
+  }
+
+  .is-nested .case-name {
+    font-size: var(--text-md);
+  }
+
+  .case-meta {
+    margin: 0.2rem 0 0.9rem;
+  }
+
+  .case-tech {
+    margin-top: 0.9rem;
   }
 
   .case-frame {
-    margin-top: 1.25rem;
-    max-width: var(--measure-wide);
+    margin-top: 1.4rem;
   }
 
-  .case-frame .frame-shot {
+  .frame-shot {
+    display: block;
     width: 100%;
     height: auto;
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     border: var(--hairline) solid var(--ink-faint);
+  }
+
+  /*
+   * A full-length page shown through a one-screen window. Hover or focus
+   * scrolls it to the bottom at reading pace; leaving brings it back up
+   * quickly. object-position does the scrolling, so the image keeps its
+   * natural size and nothing is measured in script.
+   */
+  .scrolls {
+    position: relative;
+    cursor: ns-resize;
+    outline-offset: 4px;
+  }
+
+  .scrolls .frame-shot {
+    aspect-ratio: 16 / 10;
+    height: auto;
+    object-fit: cover;
+    object-position: 50% 0%;
+    transition: object-position 1.1s var(--ease);
+  }
+
+  .scrolls:hover .frame-shot,
+  .scrolls:focus-visible .frame-shot,
+  .scrolls:focus .frame-shot {
+    object-position: 50% 100%;
+    transition: object-position 9s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  }
+
+  .frame-hint {
+    margin-top: 0.45rem;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .scrolls:hover .frame-hint,
+  .scrolls:focus .frame-hint {
+    opacity: 0;
+  }
+
+  .hint-touch {
+    display: none;
+  }
+
+  @media (hover: none) {
+    .hint-hover {
+      display: none;
+    }
+
+    .hint-touch {
+      display: inline;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scrolls .frame-shot {
+      transition: none;
+    }
   }
 
   :global(html[data-theme="dark"]) .frame-light,
   :global(html[data-theme="light"]) .frame-dark {
     display: none;
-  }
-
-  figcaption {
-    margin-top: 0.4rem;
-    font-size: var(--text-xs);
   }
 </style>

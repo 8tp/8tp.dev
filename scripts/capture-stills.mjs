@@ -14,8 +14,8 @@
  * Some targets need a click or two to get past a splash screen; those steps are
  * declared per target below. `js:` steps are evaluated in the page.
  *
- * Pass names to capture a subset — `pnpm stills aeperion aeperion-dark` — which
- * matters because a full run walks nine live sites and takes minutes.
+ * Pass names to capture a subset — `pnpm stills aeperion-tall aeperion-tall-dark` — which
+ * matters because a full run walks every live site and takes minutes.
  */
 import { spawn } from "node:child_process";
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -69,8 +69,18 @@ const TARGETS = [
    * Light is set explicitly rather than left to the default so the two frames
    * differ only by the thing under test.
    */
-  { name: "aeperion", url: "https://aeperion.com", steps: [aepTheme("light")] },
-  { name: "aeperion-dark", url: "https://aeperion.com", steps: [aepTheme("dark")] },
+  /* Full-length pages for the client frames, which scroll on hover. */
+  { name: "aeperion-tall", url: "https://aeperion.com", height: 3600, steps: [aepTheme("light")] },
+  { name: "aeperion-tall-dark", url: "https://aeperion.com", height: 3600, scheme: "dark", steps: [aepTheme("dark")] },
+  /* MouseRank and Aimperion show a first-visit consent bar; "OK" dismisses it. */
+  { name: "mouserank-tall", url: "https://mouserank.org", height: 1800, steps: ["^OK$"] },
+  { name: "mouserank-tall-dark", url: "https://mouserank.org", height: 1800, scheme: "dark", steps: ["^OK$"] },
+  { name: "chudopoly", url: "https://chudopoly.deal" },
+  { name: "chudopoly-dark", url: "https://chudopoly.deal", scheme: "dark" },
+  { name: "palhelm-dark", url: "https://palhelm.com", height: 2400, scheme: "dark" },
+  { name: "hatchdle", url: "https://hatchdle.com" },
+  { name: "hatchdle-dark", url: "https://hatchdle.com", scheme: "dark" },
+  { name: "aimperion", url: "https://aimperion.com", steps: ["^OK$"] },
 ];
 
 /* Optional allow-list from argv. */
@@ -165,6 +175,11 @@ for (const target of targets) {
         height: target.height ?? VIEWPORT.height,
         deviceScaleFactor: VIEWPORT.scale,
         mobile: false,
+      });
+      /* Sites that follow the OS theme get it from here; sites with their own
+         switcher also need a step that sets it. */
+      await send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-color-scheme", value: target.scheme ?? "light" }],
       });
       await send("Page.enable");
       await send("Page.navigate", { url: target.url });

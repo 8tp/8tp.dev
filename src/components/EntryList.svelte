@@ -1,37 +1,39 @@
 <script>
   /**
-   * A list of work entries with a cursor-following hover preview.
+   * The project ledger: one row per project, ruled like a printed index, with
+   * a cursor-following still on desktop.
    *
-   * Modelled on omarabdulrahim.com: the entry itself is the link, hovering
-   * washes the whole block (padding + equal negative margin, so nothing
-   * shifts), and a small still glides after the cursor.
+   * A row is not one big link any more. The name is the link to the thing
+   * itself, and the small out-links on the right (Play, Source, Trailer) each
+   * go where they say. That is what lets a row carry more than one action
+   * without nesting anchors.
    *
    * One preview element is shared by the whole list and eased toward the
-   * pointer each frame, so moving between entries swaps the image while the
-   * element keeps gliding — no per-entry teleport, no re-fade. It appears at
-   * the cursor on first hover, then follows.
+   * pointer each frame, so moving between rows swaps the image while the
+   * element keeps gliding. It appears at the cursor on first hover, then
+   * follows. Desktop only: this island is mounted with client:media, so touch
+   * devices never hydrate it and get a plain list of links.
    *
-   * Desktop only — this island is mounted with client:media, so touch devices
-   * never hydrate it and the markup they get is a plain list of links.
-   *
-   * The one thing touch devices *do* get is the mark: a line drawing per
-   * project in the left column. It carries the weight the hover preview
-   * carries on desktop, where the list would otherwise be a wall of prose.
+   * Trailer buttons carry `data-trailer` and are handled by a delegated
+   * listener in Trailer.astro, so they work whether or not this island
+   * hydrated.
    */
   import Mark from "./Mark.svelte";
+  import TechList from "./TechList.svelte";
+  import Glyph from "./Glyph.svelte";
 
-  let { entries = [], split = false } = $props();
+  let { entries = [] } = $props();
 
   let list; // the <ul>, positioning context and coordinate origin
   let peekEl;
 
   /** Entry currently hovered that has a preview; null fades the still out. */
   let active = $state(null);
-  /** Last shown preview — kept through the fade-out so the image persists. */
+  /** Last shown preview, kept through the fade-out so the image persists. */
   let still = $state(null);
 
   /* Pointer target and eased position, in list coordinates. Written straight
-     to the element's style from the frame loop — no reactive churn at 60 Hz. */
+     to the element's style from the frame loop, with no reactive churn. */
   let target = { x: 0, y: 0 };
   let pos = { x: 0, y: 0 };
   let raf = 0;
@@ -40,13 +42,17 @@
     typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)");
 
   function frame() {
-    /* Ease toward the cursor; snap when the visitor prefers reduced motion. */
     const k = reduced && reduced.matches ? 1 : 0.16;
     pos.x += (target.x - pos.x) * k;
     pos.y += (target.y - pos.y) * k;
-    if (peekEl) peekEl.style.translate = `${pos.x}px ${pos.y}px`;
+    if (peekEl) {
+      peekEl.style.translate = `${pos.x}px ${pos.y}px`;
+      /* Swing a little with sideways speed, like a card held at one corner. */
+      const swing = reduced && reduced.matches ? 0 : Math.max(-7, Math.min(7, (target.x - pos.x) * 0.06));
+      peekEl.style.rotate = `${swing}deg`;
+    }
 
-    const resting = Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) < 0.5;
+    const resting = Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) < 0.2;
     raf = active || !resting ? requestAnimationFrame(frame) : 0;
   }
 
@@ -59,17 +65,26 @@
     target = { x: event.clientX - box.left + 20, y: event.clientY - box.top + 18 };
   }
 
+  /* The site's own dark capture when this page is dark, if there is one. */
+  function pick(preview) {
+    const dark = document.documentElement.dataset.theme === "dark";
+    return dark && preview.srcDark ? { ...preview, src: preview.srcDark } : preview;
+  }
+
+  function show(entry) {
+    if (!active) pos = { ...target };
+    active = entry;
+    still = pick(entry.preview);
+    wake();
+  }
+
   function enter(event, entry) {
     if (!entry.preview) {
       active = null;
       return;
     }
     aim(event);
-    /* First appearance materialises at the cursor; afterwards it glides. */
-    if (!active) pos = { ...target };
-    active = entry;
-    still = entry.preview;
-    wake();
+    show(entry);
   }
 
   function move(event) {
@@ -78,18 +93,15 @@
     wake();
   }
 
-  /* Keyboard focus has no pointer — settle the still just under the entry. */
+  /* Keyboard focus has no pointer: settle the still just under the row. */
   function focusEntry(event, entry) {
     if (!entry.preview) {
       active = null;
       return;
     }
     const item = event.currentTarget.closest("li");
-    target = { x: item.offsetLeft + 16, y: item.offsetTop + item.offsetHeight + 8 };
-    if (!active) pos = { ...target };
-    active = entry;
-    still = entry.preview;
-    wake();
+    target = { x: item.offsetLeft + 24, y: item.offsetTop + item.offsetHeight + 8 };
+    show(entry);
   }
 
   function leave() {
@@ -99,54 +111,50 @@
   $effect(() => () => cancelAnimationFrame(raf));
 </script>
 
-<ul
-  class="entries"
-  class:entries-split={split}
-  role="list"
-  bind:this={list}
-  onmousemove={move}
-  onmouseleave={leave}
->
+<ul class="ledger" role="list" bind:this={list} onmousemove={move} onmouseleave={leave}>
   {#each entries as entry (entry.slug)}
-    <li class="entry-wrap" onmouseenter={(e) => enter(e, entry)}>
-      <a
-        class="entry"
-        href={entry.href}
-        rel="noopener"
-        target="_blank"
-        onfocus={(e) => focusEntry(e, entry)}
-        onblur={leave}
-      >
-        <span class="entry-mark"><Mark d={entry.mark} logo={entry.logo} /></span>
+    <li class="row" class:is-child={entry.child} onmouseenter={(e) => enter(e, entry)}>
+      <div class="row-head">
+        <span class="mark-box"><Mark d={entry.mark} logo={entry.logo} /></span>
 
-        <!-- A real heading inside the link, so the list is navigable by
-             heading. `<a>` is transparent content, so flow content is valid
-             here — which is also why the text column is a div and not a span,
-             since a span may only hold phrasing content. -->
-        <div class="entry-text">
-          <h3 class="entry-name">{entry.name}</h3>
-          <span class="entry-body muted">{entry.blurb}</span>
-        </div>
-      </a>
+        <!-- A real heading, so the list is navigable by heading. -->
+        <h3 class="row-name">
+          <a
+            class="row-link"
+            href={entry.href}
+            rel="noopener"
+            target="_blank"
+            onfocus={(e) => focusEntry(e, entry)}
+            onblur={leave}
+          >
+            {entry.name}
+          </a>
+        </h3>
 
-      {#if entry.stack?.length || entry.sourceHref}
-        <p class="entry-foot">
-          {#if entry.stack?.length}
-            <span class="stack">{entry.stack.join(" · ")}</span>
+        <p class="row-links">
+          {#if entry.trailer}
+            <button class="link link-muted" type="button" data-trailer={entry.trailer} data-title={entry.name}>
+              Trailer
+            </button>
           {/if}
-          {#if entry.sourceHref}
+          {#each entry.links as link (link.href)}
             <a
-              class="link link-muted entry-src"
-              href={entry.sourceHref}
+              class="link link-muted out"
+              href={link.href}
               rel="noopener"
               target="_blank"
-              aria-label="{entry.name} source"
+              aria-label="{entry.name}: {link.label}"
             >
-              source
+              {#if link.label === "Source"}<Glyph name="github" />{/if}{link.label}
             </a>
-          {/if}
+          {/each}
         </p>
-      {/if}
+      </div>
+
+      <div class="row-body">
+        <p class="row-blurb">{entry.blurb}</p>
+        <TechList items={entry.stack} />
+      </div>
     </li>
   {/each}
 
@@ -168,75 +176,99 @@
 </ul>
 
 <style>
-  .entries {
+  .ledger {
     position: relative;
+    list-style: none;
+    padding: 0;
+    border-bottom: var(--hairline) solid var(--ink-hair);
 
-    /* The mark column. Everything that has to line up under the entry name —
-       the stack line, the source link — is indented by exactly this much. */
-    --mark: 1.75rem;
-    --mark-gap: 0.7rem;
+    /* Everything that has to line up under the name (the blurb) is indented
+       by exactly the mark plus its gap. */
+    --mark: 1.25rem;
+    --mark-gap: 0.65rem;
   }
 
-  .entry-wrap {
-    padding: 0.5rem 0.75rem;
-    margin: 0 -0.75rem;
-    border-radius: var(--radius);
-    transition: background-color var(--dur-fast) var(--ease);
+  .row {
+    padding-block: 0.95rem 1.05rem;
+    border-top: var(--hairline) solid var(--ink-hair);
   }
 
-  .entry-wrap:hover,
-  .entry-wrap:focus-within {
-    background: var(--ink-wash);
+  .row:first-child {
+    border-top: 0;
+    padding-top: 0;
   }
 
-  .entry {
-    display: grid;
-    grid-template-columns: var(--mark) minmax(0, 1fr);
-    gap: var(--mark-gap);
-    align-items: start;
-  }
-
-  /* Optically seated against the serif name's cap height rather than its line
-     box, which sits the mark a hair low if you leave it to `align-items`. */
-  .entry-mark {
-    display: block;
-    width: var(--mark);
-    height: var(--mark);
-    margin-top: 0.2rem;
-    color: var(--ink-soft);
-    transition: color var(--dur-fast) var(--ease);
-  }
-
-  .entry-wrap:hover .entry-mark,
-  .entry-wrap:focus-within .entry-mark {
-    color: var(--ink);
-  }
-
-  .entry-body {
-    display: block;
-    max-width: var(--measure);
-  }
-
-  .entry-foot {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.15rem 0.75rem;
-    margin-top: 0.15rem;
-    /* Hang under the text column, not under the mark. */
+  /* A sub-project sits under its parent with no rule between them, indented
+     one mark so it reads as belonging. */
+  .row.is-child {
+    border-top: 0;
+    padding-top: 0;
     padding-left: calc(var(--mark) + var(--mark-gap));
   }
 
-  .stack {
-    color: var(--ink-soft);
-    font-size: var(--text-xs);
+  .row-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--mark-gap);
   }
 
-  .entry-src {
-    font-size: var(--text-xs);
+  .row-head .mark-box {
+    align-self: center;
+    transition: color var(--dur-fast) var(--ease);
   }
 
-  /* The shared preview. Inert, absolutely positioned so it never takes a grid
+  .row:hover .mark-box,
+  .row:focus-within .mark-box {
+    color: var(--ink);
+  }
+
+  .row-name {
+    min-width: 0;
+  }
+
+  .row-link {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--dur-fast) var(--ease);
+  }
+
+  .row:hover .row-link,
+  .row-link:focus-visible {
+    text-decoration-color: var(--ink-line);
+  }
+
+  .row-links {
+    display: flex;
+    gap: 0.9rem;
+    margin-left: auto;
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+
+  .row-links button {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--ink-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  .row-body {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.3rem;
+    padding-left: calc(var(--mark) + var(--mark-gap));
+  }
+
+  .row-blurb {
+    max-width: var(--measure);
+    font-size: var(--text-sm);
+    color: var(--ink-body);
+  }
+
+  /* The shared preview. Inert, absolutely positioned so it never takes a
      row, and only ever on a fine pointer. */
   .peek-slot {
     position: absolute;
@@ -256,17 +288,19 @@
       top: 0;
       left: 0;
       z-index: 20;
-      width: 19rem;
-      /* The slot has no width — undo the global img max-width clamp. */
+      width: 20rem;
+      /* The slot has no width; undo the global img max-width clamp. */
       max-width: none;
       height: auto;
-      border-radius: var(--radius);
+      border-radius: var(--radius-sm);
       border: var(--hairline) solid var(--ink-faint);
+      box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.35);
       pointer-events: none;
+      /* Hangs from the corner nearest the cursor, so the swing reads as weight. */
+      transform-origin: 0 0;
       opacity: 0;
       scale: 0.97;
-      /* `translate` is eased by the frame loop, never transitioned — only the
-         reveal itself animates here. */
+      /* `translate` is eased by the frame loop, never transitioned. */
       transition: opacity 250ms var(--ease), scale 250ms var(--ease);
     }
 
