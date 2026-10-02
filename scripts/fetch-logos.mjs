@@ -28,22 +28,18 @@ const SOURCES = {
   "instagib-arena": { repo: "instagib-arena", file: "public/favicon.svg" },
   palhelm: { repo: "palhelm", file: "assets/mark.svg" },
   imprimatur: { repo: "imprimatur", file: "assets/brand/app-icon.png" },
-  coup: { repo: "Coup", file: "public/coup-logo-transparent.png" },
+  coup: { repo: "Coup", file: "public/icons/icon-512-v3.png" },
   startpage: { repo: "startpage", file: "favicon.svg" },
   vitals: { repo: "Vitals-Command-Center", file: "apps/web/public/icon.svg" },
-  typeduel: { repo: "typeduel", file: "packages/client/public/favicon.svg" },
-  hudaim: { repo: "hudaim", file: "public/favicon.svg" },
-  tidewatcher: { repo: "tidewatcher", file: "assets/tidewatcher-mark.svg" },
-  antmaze: { repo: "AntMaze", file: "assets/logo.svg" },
 
   /* Shopify serves the storefront's mark off the theme's asset directory. */
   aeperion: { url: "https://aeperion.com/cdn/shop/t/16/assets/aep-favicon.svg" },
 
-  /* wc26-bracket has no icon file — its favicon is a data: URI inlined in
-     index.html, reproduced here rather than parsed back out of the markup. */
-  "wc26-bracket": {
-    inline: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="36" fill="white" stroke="#17191d" stroke-width="11"/><circle cx="50" cy="50" r="13" fill="#d4af37"/></svg>\n`,
-  },
+  /* Private repos or other people's, so these come off the live site. */
+  aimperion: { url: "https://aimperion.com/favicon.svg" },
+  hatchdle: { url: "https://hatchdle.com/icons/apple-touch-icon.png" },
+  mouserank: { url: "https://mouserank.org/favicon.svg" },
+  chudopoly: { url: "https://chudopoly.deal/icon.svg" },
 };
 
 /*

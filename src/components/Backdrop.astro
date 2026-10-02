@@ -1,0 +1,184 @@
+---
+/**
+ * The page backdrop: one fixed WebGL canvas behind everything. Each variant is
+ * a single fragment shader in src/lib/backdrops.ts; this file only hosts it.
+ *
+ * Why the GPU: the first version drew contour lines on the CPU every frame and
+ * stuttered. A fragment shader does the same work per pixel in parallel, so
+ * the animation runs at the display's frame rate for almost no main-thread
+ * cost. On top of that the canvas renders at a reduced resolution (the
+ * effects are soft, so nobody can tell) and stops when the tab is hidden.
+ *
+ * Every shader receives the same uniforms:
+ *   u_res    canvas size in device pixels
+ *   u_time   seconds, already scaled by the variant's speed
+ *   u_mouse  eased pointer position in device pixels (off-screen when idle)
+ *   u_ink    the theme's ink colour, linear 0..1
+ *   u_paper  the theme's paper colour
+ *   u_dark   1.0 in the dark theme, else 0.0
+ *
+ * Pick a variant with `site.backdrop`, or `?bg=<name>` to compare
+ * (contours, window, paper, marbling, guilloche). "dither"
+ * keeps the old CSS plate and "none" is bare paper; neither creates a canvas.
+ * No WebGL, or reduced motion: the shader draws one still frame (or the CSS
+ * plate shows if WebGL is missing entirely).
+ */
+import { site } from "~/data/site";
+---
+
+<canvas class="backdrop" aria-hidden="true" data-default={site.backdrop}></canvas>
+
+<script>
+  import { backdrops, VERTEX } from "~/lib/backdrops";
+
+  const canvas = document.querySelector<HTMLCanvasElement>("canvas.backdrop")!;
+  const root = document.documentElement;
+
+  const asked = new URLSearchParams(location.search).get("bg") ?? "";
+  const name = asked in backdrops || asked === "dither" || asked === "none" ? asked : canvas.dataset.default!;
+  const variant = backdrops[name];
+
+  const gl = variant ? canvas.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        premultipliedAlpha: true,
+        /* Keeps dual-GPU Macs on the integrated chip; this is a background. */
+        powerPreference: "low-power",
+      }) : null;
+  root.dataset.backdrop = gl ? name : name === "none" ? "none" : "dither";
+
+  if (gl && variant) {
+    gl.getExtension("OES_standard_derivatives");
+    const compile = (type: number, src: string) => {
+      const s = gl.createShader(type)!;
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) ?? "shader");
+      return s;
+    };
+
+    const program = gl.createProgram()!;
+    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX));
+    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, variant.fragment));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    /* One triangle that covers the screen. */
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const pos = gl.getAttribLocation(program, "a_pos");
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+    const u = (n: string) => gl.getUniformLocation(program, n);
+    const uRes = u("u_res"), uTime = u("u_time"), uMouse = u("u_mouse");
+    const uInk = u("u_ink"), uPaper = u("u_paper"), uDark = u("u_dark");
+
+    /* Theme colours come from the CSS tokens, so the shader can't drift. */
+    const rgb = (v: string) => {
+      const n = parseInt(v.trim().slice(1), 16);
+      return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+    };
+    const readTheme = () => {
+      const css = getComputedStyle(root);
+      gl.uniform3fv(uInk, rgb(css.getPropertyValue("--ink") || "#171816"));
+      gl.uniform3fv(uPaper, rgb(css.getPropertyValue("--paper") || "#f6f6f3"));
+      gl.uniform1f(uDark, root.dataset.theme === "dark" ? 1 : 0);
+    };
+
+    /* Soft effects don't need full resolution; this is most of the saving. */
+    const scale = Math.min(devicePixelRatio || 1, 2) * (variant.resolution ?? 0.5);
+    const resize = () => {
+      canvas.width = Math.max(1, Math.round(innerWidth * scale));
+      canvas.height = Math.max(1, Math.round(innerHeight * scale));
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+    };
+
+    const pointer = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4 };
+    addEventListener(
+      "pointermove",
+      (e) => {
+        pointer.tx = e.clientX * scale;
+        pointer.ty = (innerHeight - e.clientY) * scale;
+        if (pointer.x < -1e3) Object.assign(pointer, { x: pointer.tx, y: pointer.ty });
+      },
+      { passive: true },
+    );
+    document.documentElement.addEventListener("pointerleave", () => {
+      pointer.tx = pointer.ty = -1e4;
+    });
+
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let time = variant.seed ?? 0;
+    let last = performance.now();
+    let raf = 0;
+
+    const render = () => {
+      pointer.x += (pointer.tx - pointer.x) * 0.06;
+      pointer.y += (pointer.ty - pointer.y) * 0.06;
+      gl.uniform1f(uTime, time);
+      gl.uniform2f(uMouse, pointer.x, pointer.y);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      time += Math.min(0.05, (now - last) / 1000) * (variant.speed ?? 1);
+      last = now;
+      render();
+    };
+
+    const start = () => {
+      cancelAnimationFrame(raf);
+      last = performance.now();
+      if (reduced.matches) render();
+      else raf = requestAnimationFrame(frame);
+    };
+
+    resize();
+    readTheme();
+    /* Phones resize the viewport whenever the address bar shows or hides.
+       Only rebuild for real changes, or the canvas reallocates mid-scroll. */
+    let lastW = innerWidth, lastH = innerHeight;
+    addEventListener("resize", () => {
+      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < lastH * 0.15) return;
+      lastW = innerWidth;
+      lastH = innerHeight;
+      resize();
+      if (reduced.matches) render();
+    });
+    new MutationObserver(() => {
+      readTheme();
+      if (reduced.matches) render();
+    }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    document.addEventListener("visibilitychange", () => (document.hidden ? cancelAnimationFrame(raf) : start()));
+    reduced.addEventListener("change", start);
+    start();
+  }
+</script>
+
+<style>
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    /* The large viewport, so the canvas already covers the area the
+       address bar uncovers. */
+    height: 100lvh;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  :global(html:not([data-backdrop])) .backdrop,
+  :global(html[data-backdrop="dither"]) .backdrop,
+  :global(html[data-backdrop="none"]) .backdrop {
+    display: none;
+  }
+
+  @media print {
+    .backdrop {
+      display: none;
+    }
+  }
+</style>

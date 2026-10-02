@@ -4,56 +4,74 @@ import Intro from "~/components/Intro.astro";
 import EntryList from "~/components/EntryList.svelte";
 import ClientCase from "~/components/ClientCase.astro";
 import Contact from "~/components/Contact.astro";
-import { featured, more, childrenOf, type Project } from "~/data/projects";
+import { featured, also, childrenOf, allReposUrl, type Project } from "~/data/projects";
 import { markFor } from "~/data/marks";
 import { logoFor } from "~/data/logos";
-import { clients } from "~/data/clients";
+import { tech } from "~/data/stack";
+import { cases, casesUnder } from "~/data/clients";
 
-/** Flatten a Project into the shape EntryList renders. */
-const toEntry = (project: Project, { stack = true } = {}) => ({
-  slug: project.slug,
-  name: project.name,
-  blurb: project.blurb,
-  stack: stack ? project.stack : undefined,
-  href: project.website ?? project.source,
-  sourceHref: project.source,
-  preview: project.preview ?? null,
-  mark: markFor(project.slug),
-  logo: logoFor(project.slug),
-});
+/** Flatten a Project into the shape the ledger renders. */
+const toEntry = (project: Project) => {
+  const links = [];
+  if (project.website) links.push({ label: project.verb ?? "Visit", href: project.website });
+  if (project.source) links.push({ label: "Source", href: project.source });
+  return {
+    slug: project.slug,
+    name: project.name,
+    blurb: project.blurb,
+    href: project.website ?? project.source,
+    links,
+    trailer: project.trailer ?? null,
+    stack: tech(project.stack),
+    child: project.tier === "child",
+    preview: project.preview ?? null,
+    mark: markFor(project.slug),
+    logo: logoFor(project.slug),
+  };
+};
 
 /* Children sit directly under their parent rather than in a tier of their own. */
-const work = featured
-  .flatMap((project) => [project, ...childrenOf(project.slug)])
-  .map((project) => toEntry(project));
+const work = featured.flatMap((project) => [project, ...childrenOf(project.slug)]).map(toEntry);
 
-/* The "more" list is name + one sentence — no stack lines. */
-const moreEntries = more.map((project) => toEntry(project, { stack: false }));
+/* "a, b; c; and d." */
+const separator = (i: number) => (i < also.length - 2 ? "; " : i === also.length - 2 ? "; and " : ".");
 
 /* Keep in step with the .peek breakpoint in EntryList.svelte. */
 const PEEK = "(min-width: 52rem) and (hover: hover) and (pointer: fine)";
 ---
 
-<Layout>
+<Layout home>
   <Intro />
 
-  <section class="section" aria-labelledby="work-heading">
-    <h2 class="section-title" id="work-heading">Selected work</h2>
-    <EntryList entries={work} client:media={PEEK} />
-  </section>
-
-  <section class="section" aria-labelledby="client-heading">
+  <section class="section grid" aria-labelledby="client-heading">
     <h2 class="section-title" id="client-heading">Client work</h2>
-    {clients.map((study) => <ClientCase study={study} />)}
+    <div>
+      {cases.map((study) => <ClientCase study={study} under={casesUnder(study.slug)} />)}
+    </div>
   </section>
 
-  <section class="section" aria-labelledby="more-heading">
-    <h2 class="section-title" id="more-heading">More</h2>
-    <EntryList entries={moreEntries} split client:media={PEEK} />
+  <section class="section grid" aria-labelledby="work-heading">
+    <h2 class="section-title" id="work-heading">Own projects</h2>
+    <div>
+      <EntryList entries={work} client:media={PEEK} />
+
+      <!-- Each item on one line: Astro pads the seams around expressions that
+           break across lines, and the punctuation ends up floating. -->
+      <p class="prose also">
+        Also: {also.map((project, i) => <><a class="link" href={project.website ?? project.source} rel="noopener" target="_blank">{project.name}</a>, {project.blurb}{separator(i)}</>)} The rest is on <a class="link" href={allReposUrl} rel="noopener" target="_blank">GitHub</a>.
+      </p>
+    </div>
   </section>
 
-  <section class="section" aria-labelledby="contact-heading">
+  <section class="section grid" aria-labelledby="contact-heading">
     <h2 class="section-title" id="contact-heading">Contact</h2>
     <Contact />
   </section>
 </Layout>
+
+<style>
+  .also {
+    margin-top: 1.4rem;
+    font-size: var(--text-sm);
+  }
+</style>

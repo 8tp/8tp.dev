@@ -20,12 +20,26 @@ export const site = {
   /** Used in the <title> tag and OG title. Just the name — the tab stays quiet. */
   seoTitle: "Hunter M.",
 
-  /** Hero thesis. One line, specific, no hype. */
-  tagline:
-    "I build realtime multiplayer games, self-hosted tools, native macOS apps, and commercial storefronts.",
+  /** Hero thesis. One line, specific, no hype. Also the JSON-LD description. */
+  tagline: "I design and build websites and web apps for clients, and make games and tools of my own.",
 
   description:
-    "Hunter M. builds realtime multiplayer browser games, self-hosted server tools, native macOS utilities, and commercial storefronts. Selected work with live demos and source.",
+    "Hunter M. designs and builds storefronts, product sites and web apps for clients, plus browser games, self-hosted tools and Mac apps of his own.",
+
+  /**
+   * The availability line under the intro. Keep it true; set to null to hide
+   * it rather than leave something stale up. `updated` prints in the footer so
+   * a reader can tell how fresh it is.
+   */
+  availability: "I'm taking on client work now. Email is the quickest way to reach me." as string | null,
+  updated: "October 2026",
+
+  /**
+   * Page backdrop: a shader from src/lib/backdrops.ts ("contours", "window",
+   * "paper", "marbling", "guilloche"), or "dither" / "none".
+   * Any of them can be previewed with ?bg=<name> on the URL.
+   */
+  backdrop: "contours" as string,
 
   /** Placeholder until a domain is locked; forward this address to the new inbox. */
   email: "hunter@8tp.dev",
@@ -51,7 +65,7 @@ export const site = {
     image: "/og.png",
     width: 1200,
     height: 630,
-    alt: "Hunter M. — realtime games, self-hosted tools, native apps",
+    alt: "Hunter M., set in serif on dithered paper",
   },
 
   /** Matches --paper in src/styles/global.css for each theme. */

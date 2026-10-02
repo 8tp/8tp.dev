@@ -1,26 +1,24 @@
 ---
 import { site } from "~/data/site";
+import Glyph from "~/components/Glyph.svelte";
 ---
 
 <div class="contact">
-  <p class="prose muted">
-    Tell me what you are building and roughly when you need it, and I will tell you honestly
-    whether I am the right person for it.
+  <p class="contact-email">
+    <a class="link" href={`mailto:${site.email}`}><Glyph name="mail" />{site.email}</a>
   </p>
 
-  <p class="contact-row">
-    <a class="link contact-email" href={`mailto:${site.email}`}>{site.email}</a>
+  <p class="prose">
+    Send me what you're building and when you need it. If I'm not the right fit, I'll say so.
   </p>
 </div>
 
 <style>
-  .contact-row {
-    margin-top: 0.6rem;
-  }
-
   .contact-email {
     font-family: var(--font-serif);
-    font-size: var(--text-md);
+    font-size: var(--text-lg);
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
     overflow-wrap: anywhere;
   }
 </style>

@@ -6,7 +6,9 @@
    warm paper, near-black ink, one family of alphas for hierarchy. No second
    brand hue — emphasis comes from weight, size and space.
 
-   The page is a document: small type, left-aligned, no cards, no chrome.
+   The page is a document set on a two-column grid: a narrow label column
+   on the left, like the hanging heads of a printed CV, and the work on the
+   right. Left-aligned, no cards, no chrome.
    ========================================================================= */
 
 :root {
@@ -22,6 +24,9 @@
    * rules only — never for a word you have to read.
    */
   --ink: #171816;
+  /* Running text. Close to full ink: a page of grey prose is the look this
+     redesign is moving away from. */
+  --ink-body: rgba(23, 24, 22, 0.86);
   --ink-muted: rgba(23, 24, 22, 0.64);
   --ink-soft: rgba(23, 24, 22, 0.46);
   /* Interactive edges — link underlines. ~3:1 so the affordance stands alone. */
@@ -51,18 +56,21 @@
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Three working sizes plus the serif display pair. */
-  --text-xs: 0.8125rem; /* 13px — meta, captions, footer */
-  --text: 1rem; /*         16px — body */
-  --text-md: 1.0625rem; /* 17px — entry names (serif) */
-  --text-lg: 1.25rem; /*   20px — section headings (serif) */
-  --text-xl: clamp(1.75rem, 5vw, 2.125rem); /* the name (serif) */
+  /* Four working sizes plus the serif display sizes. */
+  --text-xs: 0.8125rem; /* 13px: meta, links, footer */
+  --text-sm: 0.9375rem; /* 15px: ledger blurbs */
+  --text: 1rem; /*         16px: body */
+  --text-md: 1.125rem; /*  18px: entry names, labels (serif) */
+  --text-lg: clamp(1.375rem, 1.1rem + 1vw, 1.625rem); /* contact line (serif) */
+  --text-xl: clamp(1.625rem, 1.05rem + 2.1vw, 2.25rem); /* the lede (serif) */
 
-  /* Measure */
-  --measure: 34rem;
-  --measure-wide: 46rem;
-  --gutter: clamp(1.25rem, 5vw, 2rem);
-  --section-gap: clamp(2.5rem, 5vw, 3.25rem);
+  /* Measure and grid */
+  --measure: 36rem;
+  --page: 60rem;
+  --label: 10.5rem;
+  --col-gap: clamp(1.5rem, 4vw, 3rem);
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+  --section-gap: clamp(2.75rem, 6vw, 4.5rem);
 
   /* Shape */
   --radius-sm: 0.25rem;
@@ -87,6 +95,7 @@
   --control: #191e1a;
 
   --ink: #e8eae5;
+  --ink-body: rgba(232, 234, 229, 0.86);
   --ink-muted: rgba(232, 234, 229, 0.66);
   --ink-soft: rgba(232, 234, 229, 0.48);
   --ink-line: rgba(232, 234, 229, 0.34);
@@ -111,6 +120,7 @@
     --control: #191e1a;
 
     --ink: #e8eae5;
+    --ink-body: rgba(232, 234, 229, 0.86);
     --ink-muted: rgba(232, 234, 229, 0.66);
     --ink-soft: rgba(232, 234, 229, 0.48);
     --ink-line: rgba(232, 234, 229, 0.34);
@@ -203,6 +213,13 @@ body::before {
   }
 }
 
+/* The canvas backdrop (Backdrop.astro) replaces the plate unless the dither
+   variant is picked. Without JS the attribute is never set, so the plate is
+   what a no-script visitor gets. */
+:root[data-backdrop]:not([data-backdrop="dither"]) body::before {
+  display: none;
+}
+
 @keyframes plate-drift {
   to {
     translate: var(--plate-travel) var(--plate-travel);
@@ -224,26 +241,14 @@ button {
   padding: 0;
 }
 
-/* The serif is display only: the name, and the label that opens a section. */
+/* The serif is for display: the name, the lede, section labels, entry names. */
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--font-serif);
   font-weight: 400;
-  line-height: 1.25;
-}
-
-h1 {
-  font-size: var(--text-xl);
-}
-
-h2 {
-  font-size: var(--text-lg);
-}
-
-h3 {
-  font-size: var(--text);
-  font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.3;
+  font-size: var(--text-md);
 }
 
 p {
@@ -271,21 +276,35 @@ a {
    ========================================================================= */
 
 .shell {
-  width: min(100%, var(--measure-wide));
+  width: min(100%, var(--page));
   margin-inline: auto;
 }
 
+/*
+ * A section is one row of the page grid: its label hangs in the left column,
+ * the content sits in the right. Below the breakpoint the label stacks on top.
+ * Every section shares the same column line, which is what makes the page
+ * read as set rather than assembled.
+ */
 .section {
   padding-block: var(--section-gap);
-}
-
-.section + .section {
   border-top: var(--hairline) solid var(--ink-hair);
 }
 
-/* Section heading: serif, sentence case, full ink. No number, no rule. */
+.grid {
+  display: grid;
+  gap: 0.9rem var(--col-gap);
+}
+
+@media (min-width: 52rem) {
+  .grid {
+    grid-template-columns: var(--label) minmax(0, 1fr);
+  }
+}
+
+/* Section label: serif, sentence case, muted. No number, no eyebrow. */
 .section-title {
-  margin-bottom: 1.25rem;
+  color: var(--ink-muted);
 }
 
 /* ===========================================================================
@@ -302,15 +321,16 @@ a {
 
 .prose {
   max-width: var(--measure);
+  color: var(--ink-body);
 }
 
 .prose + .prose {
   margin-top: 0.85rem;
 }
 
-/* Stack listed as plain text, not pills. */
-.stack {
-  color: var(--ink-soft);
+/* Small meta line: role, stack. Plain text, never pills. */
+.meta {
+  color: var(--ink-muted);
   font-size: var(--text-xs);
 }
 
@@ -342,34 +362,21 @@ a.link-muted:focus-visible {
 }
 
 /* ===========================================================================
-   Entry lists — the whole page is variations on this
+   Out-links get a quiet arrow after the label, so "goes somewhere else" is
+   legible without an icon set.
    ========================================================================= */
 
-.entries {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  gap: 0.25rem;
+.out::after {
+  content: "\2009\2197";
+  font-family: var(--font-sans);
 }
 
-/* Two up, the way a short list of side projects wants to read. */
-.entries-split {
-  gap: 0.25rem 1.5rem;
-}
-
-@media (min-width: 40rem) {
-  .entries-split {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Shared with the client case, which is not an EntryList but reads as one.
-   Serif project names — the New York/SF pairing carries the hierarchy.
-   Everything else about an entry lives in EntryList.svelte. */
-.entry-name {
-  font-family: var(--font-serif);
-  font-size: var(--text-md);
-  font-weight: 400;
+/* A project's logo or drawn glyph, beside its name. */
+.mark-box {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--ink-soft);
 }
 
 /* ===========================================================================

@@ -1,0 +1,97 @@
+---
+/**
+ * One shared trailer player. Any element with `data-trailer="<YouTube id>"`
+ * opens it; the listener is delegated from the document, so buttons rendered
+ * by islands work whether or not those islands hydrated.
+ *
+ * Nothing from YouTube loads until someone asks for it: the iframe is only
+ * created on open, from youtube-nocookie.com, and torn down on close so the
+ * video stops and the connection goes with it.
+ */
+---
+
+<dialog class="trailer" aria-label="Trailer">
+  <div class="trailer-bar">
+    <p class="trailer-title"></p>
+    <button class="link link-muted trailer-close" type="button" data-close>Close</button>
+  </div>
+  <div class="trailer-frame"></div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("dialog.trailer")!;
+  const frame = dialog.querySelector<HTMLDivElement>(".trailer-frame")!;
+  const title = dialog.querySelector<HTMLParagraphElement>(".trailer-title")!;
+
+  document.addEventListener("click", (event) => {
+    const trigger = (event.target as Element).closest<HTMLElement>("[data-trailer]");
+    if (!trigger) return;
+    const id = encodeURIComponent(trigger.dataset.trailer ?? "");
+    const name = trigger.dataset.title ?? "";
+
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+    iframe.title = name ? `${name} trailer` : "Trailer";
+    iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    frame.replaceChildren(iframe);
+    title.textContent = name ? `${name}: trailer` : "Trailer";
+    dialog.showModal();
+  });
+
+  /* Close on the button, or on a click on the backdrop (the dialog element
+     itself, outside its content). Safari has no `closedby`, hence by hand. */
+  dialog.addEventListener("click", (event) => {
+    const target = event.target as Element;
+    if (target === dialog || target.closest("[data-close]")) dialog.close();
+  });
+
+  dialog.addEventListener("close", () => frame.replaceChildren());
+</script>
+
+<style>
+  .trailer {
+    width: min(64rem, calc(100vw - 2 * var(--gutter)));
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--paper-on-ink);
+    overflow: visible;
+  }
+
+  .trailer::backdrop {
+    background: rgba(10, 12, 10, 0.82);
+  }
+
+  .trailer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 0.6rem;
+    font-size: var(--text-xs);
+    color: #e8eae5;
+  }
+
+  .trailer-close {
+    color: #e8eae5;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(232, 234, 229, 0.4);
+    text-underline-offset: 0.18em;
+  }
+
+  .trailer-frame {
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .trailer-frame :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+</style>
