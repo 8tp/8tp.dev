@@ -40,6 +40,8 @@ const SOURCES = {
   hatchdle: { url: "https://hatchdle.com/icons/apple-touch-icon.png" },
   mouserank: { url: "https://mouserank.org/favicon.svg" },
   chudopoly: { url: "https://chudopoly.deal/icon.svg" },
+  /* Vite hashes the favicon's filename, so this path moves on each release. */
+  bunnyhop: { url: "https://bunnyhop.lol/assets/favicon-C_cI-hiW.svg" },
 };
 
 /*

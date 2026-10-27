@@ -1,0 +1,236 @@
+---
+/**
+ * The headline project, above everything else: name and links, a short
+ * account, a first-person run playing in a frame, and a strip of shorter
+ * first-person clips from other maps under it.
+ *
+ * Every video is muted, loops, and only plays while it's on screen. With
+ * reduced motion none of them start, and their poster frames stand in.
+ */
+import type { Headliner } from "~/data/headliner";
+import { logoFor } from "~/data/logos";
+import { tech } from "~/data/stack";
+import TechList from "~/components/TechList.svelte";
+
+interface Props {
+  project: Headliner;
+}
+
+const { project } = Astro.props;
+const logo = logoFor(project.slug);
+const [primary] = project.links;
+---
+
+<article class="headliner" id={project.slug}>
+  <header class="head">
+    {
+      logo && "src" in logo && (
+        <span class="mark-box" aria-hidden="true">
+          <img src={logo.src} alt="" decoding="async" />
+        </span>
+      )
+    }
+    <h3 class="name">
+      <a href={primary.href} rel="noopener" target="_blank">{project.name}</a>
+    </h3>
+    <p class="links">
+      {project.links.map((link) => (
+        <a class="link link-muted out" href={link.href} rel="noopener" target="_blank">{link.label}</a>
+      ))}
+    </p>
+  </header>
+
+  <p class="meta head-meta">{project.meta}</p>
+
+  <figure class="reel">
+    <video
+      class="reel-video"
+      data-autoplay
+      src={project.video.src}
+      poster={project.video.poster}
+      width={project.video.width}
+      height={project.video.height}
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-label={project.video.alt}
+    ></video>
+    <figcaption class="meta reel-caption">{project.video.caption}</figcaption>
+  </figure>
+
+  <ul class="clips" aria-label="More first-person runs">
+    {
+      project.clips.map((clip) => (
+        <li>
+          <figure>
+            <video
+              data-autoplay
+              src={clip.src}
+              poster={clip.poster}
+              width="640"
+              height="360"
+              muted
+              loop
+              playsinline
+              preload="none"
+              aria-label={clip.alt}
+            />
+            <figcaption class="meta">{clip.map}</figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+
+  {project.summary.map((para) => <p class="prose">{para}</p>)}
+
+  <div class="head-tech"><TechList items={tech(project.stack)} /></div>
+</article>
+
+<script>
+  /* Each video plays only while it's in view; never with reduced motion. */
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const visible = new Set<HTMLVideoElement>();
+  const videos = [...document.querySelectorAll<HTMLVideoElement>(".headliner video[data-autoplay]")];
+  const sync = () => {
+    for (const v of videos) {
+      if (visible.has(v) && !reduced.matches && !document.hidden) v.play().catch(() => {});
+      else v.pause();
+    }
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) visible.add(v);
+        else visible.delete(v);
+      }
+      sync();
+    },
+    { threshold: 0.25 },
+  );
+  videos.forEach((v) => io.observe(v));
+  reduced.addEventListener("change", sync);
+  document.addEventListener("visibilitychange", sync);
+</script>
+
+<style>
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .head .mark-box {
+    align-self: center;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .head .mark-box img {
+    width: 100%;
+    height: 100%;
+    border-radius: 22%;
+  }
+
+  .name {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.2;
+    font-size: var(--text-xl);
+    letter-spacing: -0.005em;
+  }
+
+  .name a {
+    text-decoration: none;
+  }
+
+  .name a:hover,
+  .name a:focus-visible {
+    text-decoration: underline;
+    text-decoration-color: var(--ink-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.14em;
+  }
+
+  .links {
+    display: flex;
+    gap: 0.9rem;
+    margin-left: auto;
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+
+  .head-meta {
+    margin: 0.3rem 0 1.2rem;
+  }
+
+  /* The main run: full width of the content column, the one big image on the
+     page, so it gets the larger radius and a hairline like the client frames. */
+  .reel {
+    margin: 0;
+  }
+
+  .reel-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #0d0f14;
+    border-radius: var(--radius-lg);
+    border: var(--hairline) solid var(--ink-faint);
+  }
+
+  .reel-caption {
+    margin-top: 0.45rem;
+  }
+
+  .clips {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin: 1rem 0 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .clips figure {
+    margin: 0;
+  }
+
+  .clips video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #0d0f14;
+    border-radius: var(--radius-sm);
+    border: var(--hairline) solid var(--ink-faint);
+  }
+
+  .clips figcaption {
+    margin-top: 0.3rem;
+  }
+
+  @media (max-width: 40rem) {
+    .clips {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .head {
+      flex-wrap: wrap;
+    }
+
+    .links {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  .head-tech {
+    margin-top: 0.9rem;
+  }
+</style>

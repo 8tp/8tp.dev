@@ -17,9 +17,14 @@
  *   u_paper  the theme's paper colour
  *   u_dark   1.0 in the dark theme, else 0.0
  *
- * Pick a variant with `site.backdrop`, or `?bg=<name>` to compare
- * (contours, window, paper, marbling, guilloche). "dither"
- * keeps the old CSS plate and "none" is bare paper; neither creates a canvas.
+ * ASCII scenes (src/lib/ascii/) share the canvas but not this pipeline: they
+ * simulate on the CPU at cell resolution and draw glyphs from an atlas. See
+ * src/lib/ascii/engine.ts.
+ *
+ * Pick a variant with `site.backdrop`, or `?bg=<name>` to compare: the ASCII
+ * scenes (jellyfish, warren, koi, meadow, starlings) or the shaders (contours, window,
+ * paper, marbling, guilloche). "dither" keeps the old CSS plate and "none" is
+ * bare paper; neither creates a canvas.
  * No WebGL, or reduced motion: the shader draws one still frame (or the CSS
  * plate shows if WebGL is missing entirely).
  */
@@ -30,13 +35,19 @@ import { site } from "~/data/site";
 
 <script>
   import { backdrops, VERTEX } from "~/lib/backdrops";
+  import { scenes } from "~/lib/ascii";
+  import { startAscii } from "~/lib/ascii/engine";
 
   const canvas = document.querySelector<HTMLCanvasElement>("canvas.backdrop")!;
   const root = document.documentElement;
 
   const asked = new URLSearchParams(location.search).get("bg") ?? "";
-  const name = asked in backdrops || asked === "dither" || asked === "none" ? asked : canvas.dataset.default!;
-  const variant = backdrops[name];
+  const known = asked in backdrops || asked in scenes || asked === "dither" || asked === "none";
+  const name = known ? asked : canvas.dataset.default!;
+  const scene = scenes[name];
+  const variant = scene ? undefined : backdrops[name];
+
+  if (scene) root.dataset.backdrop = startAscii(canvas, scene) ? name : "dither";
 
   const gl = variant ? canvas.getContext("webgl", {
         alpha: true,
@@ -45,7 +56,7 @@ import { site } from "~/data/site";
         /* Keeps dual-GPU Macs on the integrated chip; this is a background. */
         powerPreference: "low-power",
       }) : null;
-  root.dataset.backdrop = gl ? name : name === "none" ? "none" : "dither";
+  if (!scene) root.dataset.backdrop = gl ? name : name === "none" ? "none" : "dither";
 
   if (gl && variant) {
     gl.getExtension("OES_standard_derivatives");

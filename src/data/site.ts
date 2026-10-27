@@ -35,11 +35,13 @@ export const site = {
   updated: "October 2026",
 
   /**
-   * Page backdrop: a shader from src/lib/backdrops.ts ("contours", "window",
-   * "paper", "marbling", "guilloche"), or "dither" / "none".
+   * Page backdrop: an ASCII scene from src/lib/ascii/ ("jellyfish", "warren",
+   * "koi", "meadow", "starlings"), a shader from src/lib/backdrops.ts
+   * ("contours", "window", "paper", "marbling", "guilloche"), or "dither" /
+   * "none".
    * Any of them can be previewed with ?bg=<name> on the URL.
    */
-  backdrop: "contours" as string,
+  backdrop: "jellyfish" as string,
 
   /** Placeholder until a domain is locked; forward this address to the new inbox. */
   email: "hunter@8tp.dev",
