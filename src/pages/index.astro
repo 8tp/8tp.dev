@@ -3,12 +3,14 @@ import Layout from "~/layouts/Layout.astro";
 import Intro from "~/components/Intro.astro";
 import EntryList from "~/components/EntryList.svelte";
 import ClientCase from "~/components/ClientCase.astro";
+import Headliner from "~/components/Headliner.astro";
 import Contact from "~/components/Contact.astro";
 import { featured, also, childrenOf, allReposUrl, type Project } from "~/data/projects";
 import { markFor } from "~/data/marks";
 import { logoFor } from "~/data/logos";
 import { tech } from "~/data/stack";
 import { cases, casesUnder } from "~/data/clients";
+import { headliner } from "~/data/headliner";
 
 /** Flatten a Project into the shape the ledger renders. */
 const toEntry = (project: Project) => {
@@ -42,6 +44,11 @@ const PEEK = "(min-width: 52rem) and (hover: hover) and (pointer: fine)";
 
 <Layout home>
   <Intro />
+
+  <section class="section grid" aria-labelledby="latest-heading">
+    <h2 class="section-title" id="latest-heading">Latest</h2>
+    <Headliner project={headliner} />
+  </section>
 
   <section class="section grid" aria-labelledby="client-heading">
     <h2 class="section-title" id="client-heading">Client work</h2>

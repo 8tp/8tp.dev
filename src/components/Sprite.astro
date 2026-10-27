@@ -5,9 +5,10 @@
  */
 import { projects } from "~/data/projects";
 import { clients } from "~/data/clients";
+import { headliner } from "~/data/headliner";
 import { glyphs, symbolsFor } from "~/data/stack";
 
-const names = [...projects, ...clients].flatMap((entry) => entry.stack ?? []);
+const names = [headliner, ...projects, ...clients].flatMap((entry) => entry.stack ?? []);
 const symbols = symbolsFor(names);
 ---
 

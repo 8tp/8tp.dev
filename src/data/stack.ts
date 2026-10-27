@@ -14,9 +14,11 @@
 import {
   siBetterauth,
   siCloudflare,
+  siCplusplus,
   siCss,
   siDiscorddotjs,
   siDocker,
+  siElectron,
   siExpress,
   siGithub,
   siGo,
@@ -34,6 +36,8 @@ import {
   siSwift,
   siThreedotjs,
   siTypescript,
+  siWebassembly,
+  siWebgl,
 } from "simple-icons";
 
 type SimpleIcon = { path: string; hex: string };
@@ -41,9 +45,11 @@ type SimpleIcon = { path: string; hex: string };
 const icons: Record<string, SimpleIcon> = {
   "Better Auth": siBetterauth,
   Cloudflare: siCloudflare,
+  "C++": siCplusplus,
   CSS: siCss,
   "discord.js": siDiscorddotjs,
   Docker: siDocker,
+  Electron: siElectron,
   Express: siExpress,
   Go: siGo,
   GSAP: siGsap,
@@ -60,6 +66,8 @@ const icons: Record<string, SimpleIcon> = {
   Swift: siSwift,
   "Three.js": siThreedotjs,
   TypeScript: siTypescript,
+  WebAssembly: siWebassembly,
+  WebGL: siWebgl,
 };
 
 export type Tech = {

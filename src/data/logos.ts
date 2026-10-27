@@ -20,6 +20,9 @@ export const logos: Record<string, Logo> = {
     "light": "/logos/aimperion-light.svg",
     "dark": "/logos/aimperion-dark.svg"
   },
+  "bunnyhop": {
+    "src": "/logos/bunnyhop.svg"
+  },
   "chudopoly": {
     "src": "/logos/chudopoly.svg"
   },
